@@ -1,0 +1,13 @@
+[Unit]
+Description=Easy Mirror Deposit Service
+
+[Service]
+ExecStart=/opt/dans.knaw.nl/easy-mirror-deposit/bin/easy-mirror-deposit server /etc/opt/dans.knaw.nl/easy-mirror-deposit/config.yml
+# Java returns 143 even if the SIGTERM was handled correctly.
+SuccessExitStatus=143
+
+User=easy-mirror-deposit
+Group=easy-mirror-deposit
+
+[Install]
+WantedBy=multi-user.target
