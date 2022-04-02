@@ -106,7 +106,7 @@ public class MirroringService implements Managed {
             executorService.execute(new MirrorTask(movedDve, outbox, mirrorStore));
         }
         catch (IOException e) {
-            log.error("Could not move DVE to work diretory", e);
+            log.error("Could not move DVE to work directory", e);
         }
     }
 
