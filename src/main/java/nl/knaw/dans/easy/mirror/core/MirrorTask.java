@@ -27,14 +27,14 @@ public class MirrorTask implements Runnable {
 
     private final TransferItemMetadataReader transferItemMetadataReader;
     private final Path datasetVersionExportZip;
-    private final Path outbox;
+    private final Path depositOutbox;
     private final Path failedBox;
     private final Path mirrorStore;
 
-    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path outbox, Path failedBox, Path mirrorStore) {
+    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path depositOutbox, Path failedBox, Path mirrorStore) {
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.datasetVersionExportZip = datasetVersionExportZip;
-        this.outbox = outbox;
+        this.depositOutbox = depositOutbox;
         this.failedBox = failedBox;
         this.mirrorStore = mirrorStore;
     }
@@ -45,16 +45,27 @@ public class MirrorTask implements Runnable {
 
         try {
             FilenameAttributes filenameAttributes = transferItemMetadataReader.getFilenameAttributes(datasetVersionExportZip);
+            FileContentAttributes fileContentAttributes = transferItemMetadataReader.getFileContentAttributes(datasetVersionExportZip);
+            FilesystemAttributes filesystemAttributes = transferItemMetadataReader.getFilesystemAttributes(datasetVersionExportZip);
 
-            // Validate (name, is it a ZIP, ... ?)
+            if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
+
+
+
+            }
+
+            try {
+                Files.move(datasetVersionExportZip, mirrorStore.resolve(datasetVersionExportZip.getFileName()));
+            } catch (IOException e) {
+                throw new IllegalStateException("Could not move DVE to EASY mirror store", e);
+            }
+
 
         /* if (V1.0) {
                 Create minimal deposit
                 Move minimal deposit to outbox
             }
          */
-
-            // Move DVE to mirrorStore
 
         }
         catch (InvalidTransferItemException e) {

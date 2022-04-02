@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MirrorTaskTest {
     private final Path inbox = Paths.get("target/test/MirrorTaskTest/inbox");
-    private final Path outBox = Paths.get("target/test/MirrorTaskTest/outbox");
+    private final Path depositOutbox = Paths.get("target/test/MirrorTaskTest/depositOutbox");
     private final Path failedBox = Paths.get("target/test/MirrorTaskTest/failedBox");
     private final Path mirrorStore = Paths.get("target/test/MirrorTaskTest/mirrorStore");
     private final Path dveRootDir = Paths.get("src/test/resources/dves/");
@@ -40,11 +40,11 @@ public class MirrorTaskTest {
     @BeforeEach
     public void setUp() throws Exception {
         FileUtils.deleteDirectory(inbox.toFile());
-        FileUtils.deleteDirectory(outBox.toFile());
+        FileUtils.deleteDirectory(depositOutbox.toFile());
         FileUtils.deleteDirectory(failedBox.toFile());
         FileUtils.deleteDirectory(mirrorStore.toFile());
         Files.createDirectories(inbox);
-        Files.createDirectories(outBox);
+        Files.createDirectories(depositOutbox);
         Files.createDirectories(failedBox);
         Files.createDirectories(mirrorStore);
     }
@@ -52,7 +52,7 @@ public class MirrorTaskTest {
     private MirrorTask createTask(Path dve) throws Exception {
         Path dveInInbox = inbox.resolve(dve.getFileName());
         Files.copy(dveRootDir.resolve(dve), dveInInbox);
-        return new MirrorTask(transferItemMetadataReader, dveInInbox, outBox, failedBox, mirrorStore);
+        return new MirrorTask(transferItemMetadataReader, dveInInbox, depositOutbox, failedBox, mirrorStore);
     }
 
     @Test
@@ -61,11 +61,12 @@ public class MirrorTaskTest {
         createTask(dve).run();
         assertTrue(Files.exists(failedBox.resolve(dve.getFileName())));
         assertFalse(Files.exists(mirrorStore.resolve(dve.getFileName())));
-        assertEquals(0, Files.list(outBox).count());
+        assertEquals(0, Files.list(depositOutbox).count());
     }
 
     @Test
     public void dve_V2_goes_only_to_mirror_store() {
+        
     }
 
     @Test

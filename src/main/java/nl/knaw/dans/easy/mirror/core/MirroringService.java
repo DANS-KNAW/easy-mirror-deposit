@@ -34,7 +34,7 @@ public class MirroringService implements Managed {
     private final TransferItemMetadataReader transferItemMetadataReader;
     private final int pollingInterval;
     private final Path inbox;
-    private final Path outbox;
+    private final Path depositOutbox;
     private final Path failedBox;
     private final Path workDirectory;
     private final Path mirrorStore;
@@ -63,13 +63,13 @@ public class MirroringService implements Managed {
         }
     }
 
-    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, int pollingInterval, Path inbox, Path workDirectory, Path outbox, Path failedBox, Path mirrorStore) {
+    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, int pollingInterval, Path inbox, Path workDirectory, Path depositOutbox, Path failedBox, Path mirrorStore) {
         this.executorService = executorService;
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.pollingInterval = pollingInterval;
         this.inbox = inbox;
         this.workDirectory = workDirectory;
-        this.outbox = outbox;
+        this.depositOutbox = depositOutbox;
         this.failedBox = failedBox;
         this.mirrorStore = mirrorStore;
     }
@@ -107,7 +107,7 @@ public class MirroringService implements Managed {
         log.info("Scheduling " + dve.getFileName());
         try {
             Path movedDve = Files.move(dve, workDirectory.resolve(dve.getFileName()));
-            executorService.execute(new MirrorTask(transferItemMetadataReader, movedDve, outbox, failedBox, mirrorStore));
+            executorService.execute(new MirrorTask(transferItemMetadataReader, movedDve, depositOutbox, failedBox, mirrorStore));
         }
         catch (IOException e) {
             log.error("Could not move DVE to work directory", e);
