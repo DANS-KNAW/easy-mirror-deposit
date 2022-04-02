@@ -21,6 +21,7 @@ taskQueue:
 mirroringService:
   inbox: '/var/opt/dans.knaw.nl/tmp/data-station/transfer-inbox'
   pollingInterval: 1000
-  workDir: '/var/opt/dans.knaw.nl/tmp/dd-easy-mirror-deposit-working-directory'
+  workDir: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-working-directory'
   depositOutbox: '/var/opt/dans.knaw.nl/tmp/easy-ingest-flow-inbox'
+  failedBox: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-failed'
   easyMirrorStore: '/data/easy-mirror-store'

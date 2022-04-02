@@ -23,4 +23,11 @@ mirroringService:
   pollingInterval: 500
   workDir: 'data/easy-mirror-deposit-working-directory'
   depositOutbox: 'data/easy-ingest-flow-inbox'
+  failedBox: 'data/easy-mirror-deposit-failed'
   easyMirrorStore: 'data/easy-mirror-store'
+
+logging:
+  level: INFO
+  loggers:
+    "nl.knaw.dans":
+      level: DEBUG

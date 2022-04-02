@@ -39,6 +39,10 @@ public class MirroringServiceFactory {
 
     @NotNull
     @Valid
+    private Path failedBox;
+
+    @NotNull
+    @Valid
     private Path easyMirrorStore;
 
     public MirroringService build(ExecutorService executorService) {
@@ -75,6 +79,14 @@ public class MirroringServiceFactory {
 
     public void setDepositOutbox(Path depositOutbox) {
         this.depositOutbox = depositOutbox;
+    }
+
+    public Path getFailedBox() {
+        return failedBox;
+    }
+
+    public void setFailedBox(Path failedBox) {
+        this.failedBox = failedBox;
     }
 
     public Path getEasyMirrorStore() {
