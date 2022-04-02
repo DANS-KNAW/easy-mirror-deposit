@@ -16,6 +16,7 @@
 package nl.knaw.dans.easy.mirror;
 
 import nl.knaw.dans.easy.mirror.core.MirroringService;
+import nl.knaw.dans.easy.mirror.core.TransferItemMetadataReader;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -45,8 +46,8 @@ public class MirroringServiceFactory {
     @Valid
     private Path easyMirrorStore;
 
-    public MirroringService build(ExecutorService executorService) {
-        return new MirroringService(executorService, pollingInterval, inbox,  workDir, depositOutbox, easyMirrorStore);
+    public MirroringService build(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader) {
+        return new MirroringService(executorService, transferItemMetadataReader, pollingInterval, inbox, workDir, depositOutbox, failedBox, easyMirrorStore);
     }
 
     public Path getInbox() {

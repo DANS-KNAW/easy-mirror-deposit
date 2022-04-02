@@ -18,25 +18,35 @@ package nl.knaw.dans.easy.mirror.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class MirrorTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(MirrorTask.class);
 
+    private final TransferItemMetadataReader transferItemMetadataReader;
     private final Path datasetVersionExportZip;
     private final Path outbox;
+    private final Path failedBox;
     private final Path mirrorStore;
 
-    public MirrorTask(Path datasetVersionExportZip, Path outbox, Path mirrorStore) {
+    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path outbox, Path failedBox, Path mirrorStore) {
+        this.transferItemMetadataReader = transferItemMetadataReader;
         this.datasetVersionExportZip = datasetVersionExportZip;
         this.outbox = outbox;
+        this.failedBox = failedBox;
         this.mirrorStore = mirrorStore;
     }
 
     @Override
     public void run() {
         log.info("Processing " + datasetVersionExportZip.getFileName());
-        // Validate (name, is it a ZIP, ... ?)
+
+        try {
+            FilenameAttributes filenameAttributes = transferItemMetadataReader.getFilenameAttributes(datasetVersionExportZip);
+
+            // Validate (name, is it a ZIP, ... ?)
 
         /* if (V1.0) {
                 Create minimal deposit
@@ -44,6 +54,17 @@ public class MirrorTask implements Runnable {
             }
          */
 
-        // Move DVE to mirrorStore
+            // Move DVE to mirrorStore
+
+        }
+        catch (InvalidTransferItemException e) {
+            try {
+                Files.move(datasetVersionExportZip, failedBox.resolve(datasetVersionExportZip.getFileName()));
+            }
+            catch (IOException ioe) {
+                throw new IllegalStateException("Cannot move invalid DVE to failedBox");
+            }
+
+        }
     }
 }

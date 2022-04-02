@@ -19,7 +19,9 @@ package nl.knaw.dans.easy.mirror;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import nl.knaw.dans.easy.mirror.core.FileServiceImpl;
 import nl.knaw.dans.easy.mirror.core.MirroringService;
+import nl.knaw.dans.easy.mirror.core.TransferItemMetadataReaderImpl;
 
 import java.util.concurrent.ExecutorService;
 
@@ -42,7 +44,8 @@ public class EasyMirrorDepositApplication extends Application<EasyMirrorDepositC
     @Override
     public void run(final EasyMirrorDepositConfiguration configuration, final Environment environment) {
         final ExecutorService taskExecutor = configuration.getTaskQueue().build(environment);
-        final MirroringService mirroringService = configuration.getMirroringService().build(taskExecutor);
+        final MirroringService mirroringService = configuration.getMirroringService()
+            .build(taskExecutor, new TransferItemMetadataReaderImpl(environment.getObjectMapper(), new FileServiceImpl()));
         environment.lifecycle().manage(mirroringService);
     }
 
