@@ -21,6 +21,6 @@ taskQueue:
 mirroringService:
   inbox: 'data/transfer-inbox'
   pollingInterval: 500
-  workDir: 'data/dd-easy-mirror-deposit-working-directory'
+  workDir: 'data/easy-mirror-deposit-working-directory'
   depositOutbox: 'data/easy-ingest-flow-inbox'
   easyMirrorStore: 'data/easy-mirror-store'

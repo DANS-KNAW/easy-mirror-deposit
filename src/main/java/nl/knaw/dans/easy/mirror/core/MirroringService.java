@@ -57,26 +57,28 @@ public class MirroringService implements Managed {
                 tasksCreatedInitialization = false;
                 return; // file already added to queue by onStart
             }
-            processDatasetVersionExport(file.toPath());
+            scheduleDatasetVersionExport(file.toPath());
         }
     }
 
-    public MirroringService(ExecutorService executorService, int pollingInterval, Path inbox, Path outbox, Path workDirectory, Path mirrorStore) {
+    public MirroringService(ExecutorService executorService, int pollingInterval, Path inbox, Path workDirectory, Path outbox,  Path mirrorStore) {
         this.executorService = executorService;
         this.pollingInterval = pollingInterval;
         this.inbox = inbox;
-        this.outbox = outbox;
         this.workDirectory = workDirectory;
+        this.outbox = outbox;
         this.mirrorStore = mirrorStore;
     }
 
     @Override
     public void start() throws Exception {
+        log.info("Starting Mirroring Service");
         FileAlterationObserver observer = new FileAlterationObserver(inbox.toFile(), f -> f.isFile() && f.getParentFile().equals(inbox.toFile()));
         observer.addListener(new EventHandler());
         FileAlterationMonitor monitor = new FileAlterationMonitor(pollingInterval);
         monitor.addObserver(observer);
         try {
+            log.debug("Start monitor");
             monitor.start();
         }
         catch (Exception e) {
@@ -88,7 +90,7 @@ public class MirroringService implements Managed {
         try {
             Files.list(inbox)
                 .forEach(dve -> {
-                    processDatasetVersionExport(dve);
+                    scheduleDatasetVersionExport(dve);
                     tasksCreatedInitialization = true;
                 });
         }
@@ -97,10 +99,11 @@ public class MirroringService implements Managed {
         }
     }
 
-    private void processDatasetVersionExport(Path dve) {
+    private void scheduleDatasetVersionExport(Path dve) {
+        log.info("Scheduling " + dve.getFileName());
         try {
-            Files.move(dve, workDirectory);
-            executorService.execute(new MirrorTask(dve, outbox, mirrorStore));
+            Path movedDve = Files.move(dve, workDirectory.resolve(dve.getFileName()));
+            executorService.execute(new MirrorTask(movedDve, outbox, mirrorStore));
         }
         catch (IOException e) {
             log.error("Could not move DVE to work diretory", e);

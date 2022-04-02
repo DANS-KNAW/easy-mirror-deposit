@@ -15,9 +15,14 @@
  */
 package nl.knaw.dans.easy.mirror.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.file.Path;
 
 public class MirrorTask implements Runnable {
+    private static final Logger log = LoggerFactory.getLogger(MirrorTask.class);
+
     private final Path datasetVersionExportZip;
     private final Path outbox;
     private final Path mirrorStore;
@@ -30,6 +35,7 @@ public class MirrorTask implements Runnable {
 
     @Override
     public void run() {
+        log.info("Processing " + datasetVersionExportZip.getFileName());
         // Validate (name, is it a ZIP, ... ?)
 
         /* if (V1.0) {
