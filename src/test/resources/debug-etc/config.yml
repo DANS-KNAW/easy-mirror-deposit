@@ -18,7 +18,9 @@ taskQueue:
   # Threads will die after 60 seconds of idleness
   keepAliveTime: 60 seconds
 
-inbox: 'data/transfer-inbox'
-workDir: 'data/dd-easy-mirror-deposit-working-directory'
-depositOutbox: 'data/easy-ingest-flow-inbox'
-easyMirrorStore: 'data/easy-mirror-store'
+mirroringService:
+  inbox: 'data/transfer-inbox'
+  pollingInterval: 500
+  workDir: 'data/dd-easy-mirror-deposit-working-directory'
+  depositOutbox: 'data/easy-ingest-flow-inbox'
+  easyMirrorStore: 'data/easy-mirror-store'

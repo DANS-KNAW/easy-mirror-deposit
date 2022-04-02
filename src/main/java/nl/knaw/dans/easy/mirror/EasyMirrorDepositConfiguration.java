@@ -33,19 +33,7 @@ public class EasyMirrorDepositConfiguration extends Configuration {
 
     @NotNull
     @Valid
-    private Path inbox;
-
-    @NotNull
-    @Valid
-    private Path workDir;
-
-    @NotNull
-    @Valid
-    private Path depositOutbox;
-
-    @NotNull
-    @Valid
-    private Path easyMirrorStore;
+    private MirroringServiceFactory mirroringService;
 
     public ExecutorServiceFactory getTaskQueue() {
         return taskQueue;
@@ -55,35 +43,11 @@ public class EasyMirrorDepositConfiguration extends Configuration {
         this.taskQueue = taskQueue;
     }
 
-    public Path getInbox() {
-        return inbox;
+    public MirroringServiceFactory getMirroringService() {
+        return mirroringService;
     }
 
-    public void setInbox(Path inbox) {
-        this.inbox = inbox;
-    }
-
-    public Path getWorkDir() {
-        return workDir;
-    }
-
-    public void setWorkDir(Path workDir) {
-        this.workDir = workDir;
-    }
-
-    public Path getDepositOutbox() {
-        return depositOutbox;
-    }
-
-    public void setDepositOutbox(Path depositOutbox) {
-        this.depositOutbox = depositOutbox;
-    }
-
-    public Path getEasyMirrorStore() {
-        return easyMirrorStore;
-    }
-
-    public void setEasyMirrorStore(Path easyMirrorStore) {
-        this.easyMirrorStore = easyMirrorStore;
+    public void setMirroringService(MirroringServiceFactory mirroringService) {
+        this.mirroringService = mirroringService;
     }
 }
