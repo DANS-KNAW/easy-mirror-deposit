@@ -1,17 +1,24 @@
-#
-# Module configuration file
-#
-# Please, modify the configuration below to match your environment. Also, delete and/or modify
-# this description.
-
 server:
   applicationContextPath: /
   adminContextPath: /
   applicationConnectors:
     - type: http
-      # Replace with port number unique for this service
-      port: 20000
+      port: 20310
   adminConnectors:
     - type: http
-      # Replace with port number unique for this service
-      port: 20001
+      port: 20311
+
+taskQueue:
+  nameFormat: "mirroring-worker-%d"
+  maxQueueSize: 5000
+  # Number of threads will be increased when maxQueueSize is exceeded.
+  minThreads: 1
+  # No more than maxThreads will be created though
+  maxThreads: 10
+  # Threads will die after 60 seconds of idleness
+  keepAliveTime: 60 seconds
+
+inbox: '/var/opt/dans.knaw.nl/tmp/data-station/transfer-inbox'
+workDir: '/var/opt/dans.knaw.nl/tmp/dd-easy-mirror-deposit-working-directory'
+depositOutbox: '/var/opt/dans.knaw.nl/tmp/easy-ingest-flow-inbox'
+easyMirrorStore: '/data/easy-mirror-store'

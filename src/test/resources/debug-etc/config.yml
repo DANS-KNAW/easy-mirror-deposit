@@ -1,28 +1,24 @@
-
 server:
   applicationContextPath: /
   adminContextPath: /
   applicationConnectors:
     - type: http
-      # Replace with port number unique for this service
-      port: 20000
+      port: 20310
   adminConnectors:
     - type: http
-      # Replace with port number unique for this service
-      port: 20001
+      port: 20311
 
-#
-# See https://www.dropwizard.io/en/latest/manual/configuration.html#logging
-#
-logging:
-  level: INFO
-  loggers:
-    "nl.knaw.dans":
-      level: TRACE
-  appenders:
-    - type: console
-      logFormat: "%-5p [%d{ISO8601}] [%t] %c: %m%n%rEx"
+taskQueue:
+  nameFormat: "mirroring-worker-%d"
+  maxQueueSize: 5000
+  # Number of threads will be increased when maxQueueSize is exceeded.
+  minThreads: 1
+  # No more than maxThreads will be created though
+  maxThreads: 10
+  # Threads will die after 60 seconds of idleness
+  keepAliveTime: 60 seconds
 
-    - type: file
-      archive: false
-      currentLogFilename: data/easy-mirror-deposit.log
+inbox: 'data/transfer-inbox'
+workDir: 'data/dd-easy-mirror-deposit-working-directory'
+depositOutbox: 'data/easy-ingest-flow-inbox'
+easyMirrorStore: 'data/easy-mirror-store'
