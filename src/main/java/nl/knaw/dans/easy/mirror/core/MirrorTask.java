@@ -50,13 +50,15 @@ public class MirrorTask implements Runnable {
 
             if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
 
-
+                // Create a minimal deposit
+                // Move it to depositOutbox
 
             }
 
             try {
                 Files.move(datasetVersionExportZip, mirrorStore.resolve(datasetVersionExportZip.getFileName()));
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 throw new IllegalStateException("Could not move DVE to EASY mirror store", e);
             }
 

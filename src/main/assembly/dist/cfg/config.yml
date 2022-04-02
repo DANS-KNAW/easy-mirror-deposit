@@ -25,3 +25,13 @@ mirroringService:
   depositOutbox: '/var/opt/dans.knaw.nl/tmp/easy-ingest-flow-inbox'
   failedBox: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-failed'
   easyMirrorStore: '/data/easy-mirror-store'
+
+#
+# See https://www.dropwizard.io/en/latest/manual/configuration.html#logging
+#
+logging:
+  level: INFO
+  appenders:
+    - type: file
+      archive: false
+      currentLogFilename: /var/opt/dans.knaw.nl/log/easy-mirror-deposit/easy-mirror-deposit.log

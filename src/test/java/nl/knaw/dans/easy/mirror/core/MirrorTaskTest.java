@@ -66,7 +66,7 @@ public class MirrorTaskTest {
 
     @Test
     public void dve_V2_goes_only_to_mirror_store() {
-        
+
     }
 
     @Test
