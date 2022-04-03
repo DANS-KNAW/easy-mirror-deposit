@@ -42,7 +42,7 @@ public class MirrorTask implements Runnable {
 
     @Override
     public void run() {
-        log.info("Processing " + datasetVersionExportZip.getFileName());
+        log.info("Processing {}", datasetVersionExportZip.getFileName());
 
         try {
             FilenameAttributes filenameAttributes = transferItemMetadataReader.getFilenameAttributes(datasetVersionExportZip);
@@ -62,21 +62,15 @@ public class MirrorTask implements Runnable {
             catch (IOException e) {
                 throw new IllegalStateException("Could not move DVE to EASY mirror store", e);
             }
-
-
-        /* if (V1.0) {
-                Create minimal deposit
-                Move minimal deposit to outbox
-            }
-         */
-
+            log.info("SUCCESS. Done processing {}", datasetVersionExportZip.getFileName());
         }
         catch (InvalidTransferItemException e) {
             try {
+                log.error("FAIL. Could not process DVE {}, moving to failedBox.", datasetVersionExportZip.getFileName(), e);
                 Files.move(datasetVersionExportZip, failedBox.resolve(datasetVersionExportZip.getFileName()));
             }
             catch (IOException ioe) {
-                throw new IllegalStateException("Cannot move invalid DVE to failedBox");
+                throw new IllegalStateException("Cannot move invalid DVE to failedBox", ioe);
             }
 
         }
