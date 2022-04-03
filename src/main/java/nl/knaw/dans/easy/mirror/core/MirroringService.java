@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 public class MirroringService implements Managed {
@@ -63,7 +64,8 @@ public class MirroringService implements Managed {
         }
     }
 
-    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, int pollingInterval, Path inbox, Path workDirectory, Path depositOutbox, Path failedBox, Path mirrorStore) {
+    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, int pollingInterval, Path inbox, Path workDirectory,
+        Path depositOutbox, Path failedBox, Path mirrorStore) {
         this.executorService = executorService;
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.pollingInterval = pollingInterval;
@@ -77,7 +79,7 @@ public class MirroringService implements Managed {
     @Override
     public void start() throws Exception {
         log.info("Starting Mirroring Service");
-        FileAlterationObserver observer = new FileAlterationObserver(inbox.toFile(), f -> f.isFile() && f.getParentFile().equals(inbox.toFile()));
+        FileAlterationObserver observer = new FileAlterationObserver(inbox.toFile(), new DveFileFilter(inbox));
         observer.addListener(new EventHandler());
         FileAlterationMonitor monitor = new FileAlterationMonitor(pollingInterval);
         monitor.addObserver(observer);
@@ -92,7 +94,9 @@ public class MirroringService implements Managed {
 
     private void processAllFromInbox() {
         try {
+            DveFileFilter fileFilter = new DveFileFilter(inbox);
             Files.list(inbox)
+                .filter(f -> fileFilter.accept(f.toFile()))
                 .forEach(dve -> {
                     scheduleDatasetVersionExport(dve);
                     tasksCreatedInitialization = true;
@@ -107,6 +111,13 @@ public class MirroringService implements Managed {
         log.info("Scheduling " + dve.getFileName());
         try {
             Path movedDve = Files.move(dve, workDirectory.resolve(dve.getFileName()));
+            Optional<Path> optXmlFile = transferItemMetadataReader.getAssociatedXmlFile(dve);
+            if (optXmlFile.isPresent()) {
+                log.debug("Removing associated XML file {}", optXmlFile.get());
+                Files.deleteIfExists(optXmlFile.get());
+            } else {
+                log.warn("Associated XML file was not found");
+            }
             executorService.execute(new MirrorTask(transferItemMetadataReader, movedDve, depositOutbox, failedBox, mirrorStore));
         }
         catch (IOException e) {
