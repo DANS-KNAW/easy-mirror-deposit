@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MirrorTaskTest {
     private final Path inbox = Paths.get("target/test/MirrorTaskTest/inbox");
     private final Path depositOutbox = Paths.get("target/test/MirrorTaskTest/depositOutbox");
+    private final Path workDir = Paths.get("target/test/MirrorTaskTest/workingDirectory");
     private final Path failedBox = Paths.get("target/test/MirrorTaskTest/failedBox");
     private final Path mirrorStore = Paths.get("target/test/MirrorTaskTest/mirrorStore");
     private final Path dveRootDir = Paths.get("src/test/resources/dves/");
@@ -40,9 +41,11 @@ public class MirrorTaskTest {
     @BeforeEach
     public void setUp() throws Exception {
         FileUtils.deleteDirectory(inbox.toFile());
+        FileUtils.deleteDirectory(workDir.toFile());
         FileUtils.deleteDirectory(depositOutbox.toFile());
         FileUtils.deleteDirectory(failedBox.toFile());
         FileUtils.deleteDirectory(mirrorStore.toFile());
+        Files.createDirectories(workDir);
         Files.createDirectories(inbox);
         Files.createDirectories(depositOutbox);
         Files.createDirectories(failedBox);
@@ -52,7 +55,7 @@ public class MirrorTaskTest {
     private MirrorTask createTask(Path dve) throws Exception {
         Path dveInInbox = inbox.resolve(dve.getFileName());
         Files.copy(dveRootDir.resolve(dve), dveInInbox);
-        return new MirrorTask(transferItemMetadataReader, dveInInbox, depositOutbox, failedBox, mirrorStore);
+        return new MirrorTask(transferItemMetadataReader, dveInInbox,  workDir, depositOutbox, failedBox, mirrorStore);
     }
 
     @Test
@@ -71,6 +74,7 @@ public class MirrorTaskTest {
 
     @Test
     public void dve_V1_goes_to_mirror_store_and_produces_deposit() {
+        
     }
 
 }

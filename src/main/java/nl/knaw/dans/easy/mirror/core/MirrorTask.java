@@ -15,26 +15,34 @@
  */
 package nl.knaw.dans.easy.mirror.core;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
+import java.util.UUID;
 
 public class MirrorTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(MirrorTask.class);
 
     private final TransferItemMetadataReader transferItemMetadataReader;
     private final Path datasetVersionExportZip;
+    private final Path workDirectory;
     private final Path depositOutbox;
     private final Path failedBox;
     private final Path mirrorStore;
 
-    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path depositOutbox, Path failedBox, Path mirrorStore) {
+    private FilenameAttributes filenameAttributes;
+    private FileContentAttributes fileContentAttributes;
+    private FilesystemAttributes filesystemAttributes;
+
+    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path workDirectory, Path depositOutbox, Path failedBox, Path mirrorStore) {
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.datasetVersionExportZip = datasetVersionExportZip;
+        this.workDirectory = workDirectory;
         this.depositOutbox = depositOutbox;
         this.failedBox = failedBox;
         this.mirrorStore = mirrorStore;
@@ -45,15 +53,12 @@ public class MirrorTask implements Runnable {
         log.info("Processing {}", datasetVersionExportZip.getFileName());
 
         try {
-            FilenameAttributes filenameAttributes = transferItemMetadataReader.getFilenameAttributes(datasetVersionExportZip);
-            FileContentAttributes fileContentAttributes = transferItemMetadataReader.getFileContentAttributes(datasetVersionExportZip);
-            FilesystemAttributes filesystemAttributes = transferItemMetadataReader.getFilesystemAttributes(datasetVersionExportZip);
+            filenameAttributes = transferItemMetadataReader.getFilenameAttributes(datasetVersionExportZip);
+            fileContentAttributes = transferItemMetadataReader.getFileContentAttributes(datasetVersionExportZip);
+            filesystemAttributes = transferItemMetadataReader.getFilesystemAttributes(datasetVersionExportZip);
 
             if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
-
-                // Create a minimal deposit
-                // Move it to depositOutbox
-
+                createMetadataOnlyDeposit();
             }
 
             try {
@@ -75,4 +80,41 @@ public class MirrorTask implements Runnable {
 
         }
     }
+
+    private void createMetadataOnlyDeposit() {
+        String uuid = UUID.randomUUID().toString();
+        try {
+            Path deposit = Files.createDirectory(workDirectory.resolve(uuid));
+            PropertiesConfiguration props = createDepositProperties(uuid);
+            props.save(deposit.resolve("deposit.properties").toFile());
+            createMetadataOnlyBag();
+            Files.move(deposit, depositOutbox.resolve(uuid));
+        }
+        catch (IOException | ConfigurationException e) {
+            throw new IllegalStateException(String.format("Could not create working directory for deposit %s", uuid), e);
+        }
+    }
+
+    private PropertiesConfiguration createDepositProperties(String uuid) {
+        PropertiesConfiguration props = new PropertiesConfiguration();
+        props.setProperty("creation.timestamp", "");
+        props.setProperty("state.label", "SUBMITTED");
+        props.setProperty("state.description", "Deposit is submitted and ready for processing");
+        props.setProperty("depositor.userId", "easymirror");
+        props.setProperty("curation.required", "no");
+        props.setProperty("curation.performed", "no");
+        props.setProperty("identifier.dans-doi.registered", "no"); // TODO: correct?
+        props.setProperty("identifier.dans-doi.action", "create"); // TODO: probably no action. We want the DOI to be copied but not sent to DataCite by easy-ingest-flow
+        props.setProperty("bag-store.bag-name", "bag");
+        props.setProperty("deposit.origin", "API"); // TODO: new type of origin?
+        props.setProperty("identifier.doi", filenameAttributes.getDatasetPid()); // TODO: remove "doi:" ?
+        props.setProperty("bag-store.bag-id", uuid);
+        props.setProperty("identifier.urn", fileContentAttributes.getNbn());
+        return props;
+    }
+
+    private void createMetadataOnlyBag() {
+
+    }
+
 }

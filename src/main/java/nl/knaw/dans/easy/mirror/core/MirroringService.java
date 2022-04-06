@@ -118,7 +118,7 @@ public class MirroringService implements Managed {
             } else {
                 log.warn("Associated XML file was not found");
             }
-            executorService.execute(new MirrorTask(transferItemMetadataReader, movedDve, depositOutbox, failedBox, mirrorStore));
+            executorService.execute(new MirrorTask(transferItemMetadataReader, movedDve, workDirectory, depositOutbox, failedBox, mirrorStore));
         }
         catch (IOException e) {
             log.error("Could not move DVE to work directory", e);
