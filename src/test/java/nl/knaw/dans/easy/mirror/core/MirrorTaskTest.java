@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -73,8 +74,11 @@ public class MirrorTaskTest {
     }
 
     @Test
-    public void dve_V1_goes_to_mirror_store_and_produces_deposit() {
-        
+    public void dve_V1_goes_to_mirror_store_and_produces_deposit() throws Exception {
+        Path dve = Paths.get("valid/doi-10-5072-dar-dmgvdhv1.0.zip");
+        createTask(dve).run();
+        assertEquals(1, Files.list(depositOutbox).count());
+        assertTrue(Files.exists(mirrorStore.resolve(dve.getFileName())));
     }
 
 }

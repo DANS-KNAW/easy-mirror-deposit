@@ -17,6 +17,8 @@ package nl.knaw.dans.easy.mirror.core;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.joda.time.DateTime;
+import static org.joda.time.DateTimeZone.UTC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +99,7 @@ public class MirrorTask implements Runnable {
 
     private PropertiesConfiguration createDepositProperties(String uuid) {
         PropertiesConfiguration props = new PropertiesConfiguration();
-        props.setProperty("creation.timestamp", "");
+        props.setProperty("creation.timestamp", DateTime.now(UTC));
         props.setProperty("state.label", "SUBMITTED");
         props.setProperty("state.description", "Deposit is submitted and ready for processing");
         props.setProperty("depositor.userId", "easymirror");
