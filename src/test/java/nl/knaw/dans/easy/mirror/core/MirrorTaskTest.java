@@ -17,6 +17,7 @@ package nl.knaw.dans.easy.mirror.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import org.apache.velocity.app.Velocity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +42,7 @@ public class MirrorTaskTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        Velocity.init("src/test/resources/velocity.properties");
         FileUtils.deleteDirectory(inbox.toFile());
         FileUtils.deleteDirectory(workDir.toFile());
         FileUtils.deleteDirectory(depositOutbox.toFile());
@@ -56,7 +58,7 @@ public class MirrorTaskTest {
     private MirrorTask createTask(Path dve) throws Exception {
         Path dveInInbox = inbox.resolve(dve.getFileName());
         Files.copy(dveRootDir.resolve(dve), dveInInbox);
-        return new MirrorTask(transferItemMetadataReader, dveInInbox,  workDir, depositOutbox, failedBox, mirrorStore);
+        return new MirrorTask(transferItemMetadataReader, dveInInbox, workDir, depositOutbox, failedBox, mirrorStore);
     }
 
     @Test
@@ -69,8 +71,11 @@ public class MirrorTaskTest {
     }
 
     @Test
-    public void dve_V2_goes_only_to_mirror_store() {
-
+    public void dve_V1_1_goes_only_to_mirror_store() throws Exception {
+        Path dve = Paths.get("valid/doi-10-5072-dar-lwvagyv1.1.zip");
+        createTask(dve).run();
+        assertEquals(0, Files.list(depositOutbox).count());
+        assertTrue(Files.exists(mirrorStore.resolve(dve.getFileName())));
     }
 
     @Test
@@ -78,6 +83,9 @@ public class MirrorTaskTest {
         Path dve = Paths.get("valid/doi-10-5072-dar-dmgvdhv1.0.zip");
         createTask(dve).run();
         assertEquals(1, Files.list(depositOutbox).count());
+        Path depositDir = Files.list(depositOutbox).collect(Collectors.toList()).get(0);
+        assertTrue(Files.exists(depositDir.resolve("deposit.properties")));
+
         assertTrue(Files.exists(mirrorStore.resolve(dve.getFileName())));
     }
 

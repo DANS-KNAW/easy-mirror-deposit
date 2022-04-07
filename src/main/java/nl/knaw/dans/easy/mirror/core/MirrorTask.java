@@ -15,17 +15,30 @@
  */
 package nl.knaw.dans.easy.mirror.core;
 
+import gov.loc.repository.bagit.creator.BagCreator;
+import gov.loc.repository.bagit.hash.StandardSupportedAlgorithms;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.FileUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.joda.time.DateTime;
-import static org.joda.time.DateTimeZone.UTC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.UUID;
+
+import static org.joda.time.DateTimeZone.UTC;
 
 public class MirrorTask implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(MirrorTask.class);
@@ -41,7 +54,8 @@ public class MirrorTask implements Runnable {
     private FileContentAttributes fileContentAttributes;
     private FilesystemAttributes filesystemAttributes;
 
-    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path workDirectory, Path depositOutbox, Path failedBox, Path mirrorStore) {
+    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path workDirectory, Path depositOutbox, Path failedBox,
+        Path mirrorStore) {
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.datasetVersionExportZip = datasetVersionExportZip;
         this.workDirectory = workDirectory;
@@ -89,7 +103,7 @@ public class MirrorTask implements Runnable {
             Path deposit = Files.createDirectory(workDirectory.resolve(uuid));
             PropertiesConfiguration props = createDepositProperties(uuid);
             props.save(deposit.resolve("deposit.properties").toFile());
-            createMetadataOnlyBag();
+            createMetadataOnlyBag(deposit);
             Files.move(deposit, depositOutbox.resolve(uuid));
         }
         catch (IOException | ConfigurationException e) {
@@ -115,8 +129,45 @@ public class MirrorTask implements Runnable {
         return props;
     }
 
-    private void createMetadataOnlyBag() {
+    private void createMetadataOnlyBag(Path depositFolder) throws IOException {
+        Path bagFolder = depositFolder.resolve("bag");
+        Files.createDirectory(bagFolder);
+        try {
+            // Create an empty bag first
+            BagCreator.bagInPlace(bagFolder, Collections.singletonList(StandardSupportedAlgorithms.SHA1), false);
+
+            // Add no files and minimal metadata
+            Path metadataDir = Files.createDirectory(bagFolder.resolve("metadata"));
+            createDatasetXml(metadataDir);
+            createFilesXml(metadataDir);
+
+            // Update the tagmanifest
+
+        }
+        catch (NoSuchAlgorithmException e) {
+            // This should not be possible
+            throw new IllegalStateException("Could not create manifest with algorithm that should be standard supported", e);
+        }
+    }
+
+    private void createDatasetXml(Path metadataDir) throws IOException {
+        try {
+            VelocityContext context = new VelocityContext();
+            Template template = Velocity.getTemplate("dataset.xml.tmpl", "UTF-8");
+            StringWriter content = new StringWriter();
+            template.merge(context, content);
+            FileUtils.writeStringToFile(metadataDir.resolve("dataset.xml").toFile(), content.toString(), StandardCharsets.UTF_8);
+        }
+        catch (ResourceNotFoundException e) {
+            throw new IllegalStateException("Template for dataset.xml could not be loaded", e);
+        }
+        catch (ParseErrorException e) {
+            throw new IllegalStateException("Template for dataset.xml contains syntax errors", e);
+        }
 
     }
 
+    private void createFilesXml(Path metadataDir) throws IOException {
+        FileUtils.writeStringToFile(metadataDir.resolve("files.xml").toFile(), "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<files />", StandardCharsets.UTF_8);
+    }
 }
