@@ -16,7 +16,9 @@
 package nl.knaw.dans.easy.mirror.core;
 
 import gov.loc.repository.bagit.creator.BagCreator;
+import gov.loc.repository.bagit.domain.Bag;
 import gov.loc.repository.bagit.hash.StandardSupportedAlgorithms;
+import gov.loc.repository.bagit.writer.BagWriter;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -26,6 +28,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +126,7 @@ public class MirrorTask implements Runnable {
         props.setProperty("identifier.dans-doi.action", "create"); // TODO: probably no action. We want the DOI to be copied but not sent to DataCite by easy-ingest-flow
         props.setProperty("bag-store.bag-name", "bag");
         props.setProperty("deposit.origin", "API"); // TODO: new type of origin?
-        props.setProperty("identifier.doi", filenameAttributes.getDatasetPid()); // TODO: remove "doi:" ?
+        props.setProperty("identifier.doi", filenameAttributes.getDatasetPid());
         props.setProperty("bag-store.bag-id", uuid);
         props.setProperty("identifier.urn", fileContentAttributes.getNbn());
         return props;
@@ -133,15 +136,24 @@ public class MirrorTask implements Runnable {
         Path bagFolder = depositFolder.resolve("bag");
         Files.createDirectory(bagFolder);
         try {
+            DatasetMetadata md = createDatasetMetadata();
+
             // Create an empty bag first
-            BagCreator.bagInPlace(bagFolder, Collections.singletonList(StandardSupportedAlgorithms.SHA1), false);
+            Bag bag = BagCreator.bagInPlace(bagFolder, Collections.singletonList(StandardSupportedAlgorithms.SHA1), false);
+//            bag.getMetadata().add("Created", DateTimeFormatter. filesystemAttributes.getCreationTime());
+            
+
 
             // Add no files and minimal metadata
             Path metadataDir = Files.createDirectory(bagFolder.resolve("metadata"));
-            createDatasetXml(metadataDir);
+            createDatasetXml(metadataDir, md);
             createEmpyFilesXml(metadataDir);
 
             // Update the tagmanifest
+
+
+            // Save the bag
+            BagWriter.write(bag, bagFolder);
 
         }
         catch (NoSuchAlgorithmException e) {
@@ -150,10 +162,10 @@ public class MirrorTask implements Runnable {
         }
     }
 
-    private void createDatasetXml(Path metadataDir) throws IOException {
+    private void createDatasetXml(Path metadataDir, DatasetMetadata md) throws IOException {
         try {
             VelocityContext context = new VelocityContext();
-            context.put("metadata", createDatasetMetadata());
+            context.put("metadata", md);
             Template template = Velocity.getTemplate("dataset.xml.tmpl", "UTF-8");
             StringWriter content = new StringWriter();
             template.merge(context, content);
@@ -165,17 +177,11 @@ public class MirrorTask implements Runnable {
         catch (ParseErrorException e) {
             throw new IllegalStateException("Template for dataset.xml contains syntax errors", e);
         }
-
     }
 
-    private DatasetMetadata createDatasetMetadata() {
-        DatasetMetadata md = new DatasetMetadata();
-        md.setTitle("Title");
-        md.setDescription("Description");
-        md.setAudience("D37000");
-        md.setCreator("Creator");
-        md.setAccessRights("NO_ACCESS");
-        return md;
+    private DatasetMetadata createDatasetMetadata() throws IOException {
+        DatasetMetadataReader reader = new DatasetMetadataReader(datasetVersionExportZip);
+        return reader.extractDatasetMetadata();
     }
 
     private void createEmpyFilesXml(Path metadataDir) throws IOException {

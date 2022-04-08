@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ddm:DDM xmlns:ddm="http://easy.dans.knaw.nl/schemas/md/ddm/"
-         xmlns="http://easy.dans.knaw.nl/schemas/bag/metadata/files/"
          xmlns:abr="http://www.den.nl/standaard/166/Archeologisch-Basisregister/"
-         xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:dcterms="http://purl.org/dc/terms/"
          xmlns:dcx-dai="http://easy.dans.knaw.nl/schemas/dcx/dai/"
          xmlns:dcx-gml="http://easy.dans.knaw.nl/schemas/dcx/gml/"
          xmlns:id-type="http://easy.dans.knaw.nl/schemas/vocab/identifier-type/"
@@ -12,11 +12,13 @@
     <ddm:profile>
         <dc:title>${metadata.Title}</dc:title>
         <dcterms:description xml:lang="en">${metadata.Description}</dcterms:description>
-        <ddm:creator>${metadata.Creator}</ddm:creator>
+        <dc:creator>${metadata.Creator}</dc:creator>
         <ddm:created>${metadata.Created}</ddm:created>
         <ddm:available>${metadata.Available}</ddm:available>
         <ddm:audience>${metadata.Audience}</ddm:audience>
         <ddm:accessRights>${metadata.AccessRights}</ddm:accessRights>
     </ddm:profile>
-    <ddm:dcmiMetadata />
+    <ddm:dcmiMetadata >
+        <dcterms:rightsHolder>${metadata.RightsHolder}</dcterms:rightsHolder>
+    </ddm:dcmiMetadata>
 </ddm:DDM>
