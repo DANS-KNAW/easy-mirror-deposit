@@ -17,8 +17,11 @@ package nl.knaw.dans.easy.mirror.core;
 
 import gov.loc.repository.bagit.creator.BagCreator;
 import gov.loc.repository.bagit.domain.Bag;
+import gov.loc.repository.bagit.hash.Hasher;
 import gov.loc.repository.bagit.hash.StandardSupportedAlgorithms;
+import gov.loc.repository.bagit.reader.BagReader;
 import gov.loc.repository.bagit.writer.BagWriter;
+import gov.loc.repository.bagit.writer.ManifestWriter;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -28,7 +31,6 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +40,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -140,21 +144,16 @@ public class MirrorTask implements Runnable {
 
             // Create an empty bag first
             Bag bag = BagCreator.bagInPlace(bagFolder, Collections.singletonList(StandardSupportedAlgorithms.SHA1), false);
-//            bag.getMetadata().add("Created", DateTimeFormatter. filesystemAttributes.getCreationTime());
-            
-
+            bag.getMetadata()
+                .add("Created", filesystemAttributes.getCreationTime().atOffset(ZoneOffset.of("+1")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")));
 
             // Add no files and minimal metadata
             Path metadataDir = Files.createDirectory(bagFolder.resolve("metadata"));
             createDatasetXml(metadataDir, md);
             createEmpyFilesXml(metadataDir);
 
-            // Update the tagmanifest
-
-
             // Save the bag
             BagWriter.write(bag, bagFolder);
-
         }
         catch (NoSuchAlgorithmException e) {
             // This should not be possible
