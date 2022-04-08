@@ -83,7 +83,6 @@ public class MirrorTask implements Runnable {
             if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
                 createMetadataOnlyDeposit();
             }
-
             try {
                 Files.move(datasetVersionExportZip, mirrorStore.resolve(datasetVersionExportZip.getFileName()));
             }
@@ -180,7 +179,9 @@ public class MirrorTask implements Runnable {
 
     private DatasetMetadata createDatasetMetadata() throws IOException {
         DatasetMetadataReader reader = new DatasetMetadataReader(datasetVersionExportZip);
-        return reader.extractDatasetMetadata();
+        DatasetMetadata md =  reader.extractDatasetMetadata();
+        md.setDoi(filenameAttributes.getDatasetPid());
+        return md;
     }
 
     private void createEmpyFilesXml(Path metadataDir) throws IOException {

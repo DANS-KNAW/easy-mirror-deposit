@@ -20,6 +20,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 
 public class DatasetMetadata {
+    private String doi;
     private String title;
     private String description;
     private String creator;
@@ -53,6 +54,14 @@ public class DatasetMetadata {
     private static String extractNarcisIdFromUri(String narcisTermUri) {
         String[] components = narcisTermUri.split("/");
         return components[components.length - 1];
+    }
+
+    public String getDoi() {
+        return doi;
+    }
+
+    public void setDoi(String doi) {
+        this.doi = doi;
     }
 
     public String getTitle() {
