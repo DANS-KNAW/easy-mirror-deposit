@@ -139,7 +139,7 @@ public class MirrorTask implements Runnable {
             // Add no files and minimal metadata
             Path metadataDir = Files.createDirectory(bagFolder.resolve("metadata"));
             createDatasetXml(metadataDir);
-            createFilesXml(metadataDir);
+            createEmpyFilesXml(metadataDir);
 
             // Update the tagmanifest
 
@@ -153,6 +153,7 @@ public class MirrorTask implements Runnable {
     private void createDatasetXml(Path metadataDir) throws IOException {
         try {
             VelocityContext context = new VelocityContext();
+            context.put("metadata", createDatasetMetadata());
             Template template = Velocity.getTemplate("dataset.xml.tmpl", "UTF-8");
             StringWriter content = new StringWriter();
             template.merge(context, content);
@@ -167,7 +168,17 @@ public class MirrorTask implements Runnable {
 
     }
 
-    private void createFilesXml(Path metadataDir) throws IOException {
+    private DatasetMetadata createDatasetMetadata() {
+        DatasetMetadata md = new DatasetMetadata();
+        md.setTitle("Title");
+        md.setDescription("Description");
+        md.setAudience("D37000");
+        md.setCreator("Creator");
+        md.setAccessRights("NO_ACCESS");
+        return md;
+    }
+
+    private void createEmpyFilesXml(Path metadataDir) throws IOException {
         FileUtils.writeStringToFile(metadataDir.resolve("files.xml").toFile(), "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<files />", StandardCharsets.UTF_8);
     }
 }
