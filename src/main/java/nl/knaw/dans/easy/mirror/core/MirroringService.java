@@ -38,7 +38,7 @@ public class MirroringService implements Managed {
     private final Path depositOutbox;
     private final Path failedBox;
     private final Path workDirectory;
-    private final Path mirrorStore;
+    private final MirrorStore mirrorStore;
 
     private boolean initialized = false;
     private boolean tasksCreatedInitialization = false;
@@ -73,7 +73,7 @@ public class MirroringService implements Managed {
         this.workDirectory = workDirectory;
         this.depositOutbox = depositOutbox;
         this.failedBox = failedBox;
-        this.mirrorStore = mirrorStore;
+        this.mirrorStore = new MirrorStore(mirrorStore);
     }
 
     @Override

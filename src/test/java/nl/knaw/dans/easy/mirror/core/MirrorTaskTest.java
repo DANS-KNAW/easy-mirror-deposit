@@ -35,7 +35,8 @@ public class MirrorTaskTest {
     private final Path depositOutbox = Paths.get("target/test/MirrorTaskTest/depositOutbox");
     private final Path workDir = Paths.get("target/test/MirrorTaskTest/workingDirectory");
     private final Path failedBox = Paths.get("target/test/MirrorTaskTest/failedBox");
-    private final Path mirrorStore = Paths.get("target/test/MirrorTaskTest/mirrorStore");
+    private final Path mirrorStoreDir = Paths.get("target/test/MirrorTaskTest/mirrorStore");
+    private final MirrorStore mirrorStore = new MirrorStore(mirrorStoreDir);
     private final Path dveRootDir = Paths.get("src/test/resources/dves/");
     // TODO: can we ensure that this ObjectMapper has the same behavior as the one from the DropWizard environment?
     private final TransferItemMetadataReader transferItemMetadataReader = new TransferItemMetadataReaderImpl(new ObjectMapper(), new FileServiceImpl());
@@ -47,12 +48,12 @@ public class MirrorTaskTest {
         FileUtils.deleteDirectory(workDir.toFile());
         FileUtils.deleteDirectory(depositOutbox.toFile());
         FileUtils.deleteDirectory(failedBox.toFile());
-        FileUtils.deleteDirectory(mirrorStore.toFile());
+        FileUtils.deleteDirectory(mirrorStoreDir.toFile());
         Files.createDirectories(workDir);
         Files.createDirectories(inbox);
         Files.createDirectories(depositOutbox);
         Files.createDirectories(failedBox);
-        Files.createDirectories(mirrorStore);
+        Files.createDirectories(mirrorStoreDir);
     }
 
     private MirrorTask createTask(Path dve) throws Exception {
@@ -66,7 +67,7 @@ public class MirrorTaskTest {
         Path dve = Paths.get("invalid-names/not-a-dve.zip");
         createTask(dve).run();
         assertTrue(Files.exists(failedBox.resolve(dve.getFileName())));
-        assertFalse(Files.exists(mirrorStore.resolve(dve.getFileName())));
+        assertFalse(mirrorStore.contains(dve));
         assertEquals(0, Files.list(depositOutbox).count());
     }
 
@@ -75,7 +76,7 @@ public class MirrorTaskTest {
         Path dve = Paths.get("valid/doi-10-5072-dar-lwvagyv1.1.zip");
         createTask(dve).run();
         assertEquals(0, Files.list(depositOutbox).count());
-        assertTrue(Files.exists(mirrorStore.resolve(dve.getFileName())));
+        assertTrue(mirrorStore.contains(dve));
     }
 
     @Test
@@ -86,7 +87,7 @@ public class MirrorTaskTest {
         Path depositDir = Files.list(depositOutbox).collect(Collectors.toList()).get(0);
         assertTrue(Files.exists(depositDir.resolve("deposit.properties")));
 
-        assertTrue(Files.exists(mirrorStore.resolve(dve.getFileName())));
+        assertTrue(mirrorStore.contains(dve));
     }
 
 }

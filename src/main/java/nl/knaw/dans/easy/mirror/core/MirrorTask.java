@@ -55,14 +55,14 @@ public class MirrorTask implements Runnable {
     private final Path workDirectory;
     private final Path depositOutbox;
     private final Path failedBox;
-    private final Path mirrorStore;
+    private final MirrorStore mirrorStore;
 
     private FilenameAttributes filenameAttributes;
     private FileContentAttributes fileContentAttributes;
     private FilesystemAttributes filesystemAttributes;
 
     public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path workDirectory, Path depositOutbox, Path failedBox,
-        Path mirrorStore) {
+        MirrorStore mirrorStore) {
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.datasetVersionExportZip = datasetVersionExportZip;
         this.workDirectory = workDirectory;
@@ -83,15 +83,18 @@ public class MirrorTask implements Runnable {
             if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
                 createMetadataOnlyDeposit();
             }
+            if (mirrorStore.contains(datasetVersionExportZip)) {
+                throw new IllegalArgumentException("DVE already stored");
+            }
             try {
-                Files.move(datasetVersionExportZip, mirrorStore.resolve(datasetVersionExportZip.getFileName()));
+                mirrorStore.store(datasetVersionExportZip);
             }
             catch (IOException e) {
                 throw new IllegalStateException("Could not move DVE to EASY mirror store", e);
             }
             log.info("SUCCESS. Done processing {}", datasetVersionExportZip.getFileName());
         }
-        catch (InvalidTransferItemException e) {
+        catch (InvalidTransferItemException | IllegalArgumentException e) {
             try {
                 log.error("FAIL. Could not process DVE {}, moving to failedBox.", datasetVersionExportZip.getFileName(), e);
                 Files.move(datasetVersionExportZip, failedBox.resolve(datasetVersionExportZip.getFileName()));
@@ -102,6 +105,7 @@ public class MirrorTask implements Runnable {
 
         }
     }
+
 
     private void createMetadataOnlyDeposit() {
         String uuid = UUID.randomUUID().toString();
