@@ -21,6 +21,7 @@ import com.jayway.jsonpath.PathNotFoundException;
 
 public class DatasetMetadata {
     private String doi;
+    private String nbn;
     private String title;
     private String description;
     private String creator;
@@ -36,6 +37,7 @@ public class DatasetMetadata {
 
     public DatasetMetadata(String jsonLdString) {
         DocumentContext context = JsonPath.parse(jsonLdString);
+        nbn = context.read("$['ore:describes']['dansDataVaultMetadata:NBN']");
         title = context.read("$['ore:describes']['Title']");
         description = context.read("$['ore:describes']['citation:Description']['dsDescription:Text']");
         creator = context.read("$['ore:describes']['Author']['author:Name']");
@@ -62,6 +64,14 @@ public class DatasetMetadata {
 
     public void setDoi(String doi) {
         this.doi = doi;
+    }
+
+    public String getNbn() {
+        return nbn;
+    }
+
+    public void setNbn(String nbn) {
+        this.nbn = nbn;
     }
 
     public String getTitle() {
