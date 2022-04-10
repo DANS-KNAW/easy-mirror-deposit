@@ -31,7 +31,7 @@ mirroringService:
 # See https://www.dropwizard.io/en/latest/manual/configuration.html#logging
 #
 logging:
-  level: DEBUG
+  level: INFO
   appenders:
     - type: file
       archive: false
