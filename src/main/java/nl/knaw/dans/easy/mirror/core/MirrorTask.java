@@ -79,7 +79,10 @@ public class MirrorTask implements Runnable {
 
             if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
                 createMetadataOnlyDeposit();
+            } else {
+                log.info("DVE version > 1.0; SKIPPING depposit creation");
             }
+
             if (mirrorStore.contains(datasetVersionExportZip)) {
                 throw new IllegalArgumentException("DVE already stored");
             }
