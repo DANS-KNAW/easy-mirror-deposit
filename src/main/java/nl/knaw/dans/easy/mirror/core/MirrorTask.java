@@ -17,11 +17,8 @@ package nl.knaw.dans.easy.mirror.core;
 
 import gov.loc.repository.bagit.creator.BagCreator;
 import gov.loc.repository.bagit.domain.Bag;
-import gov.loc.repository.bagit.hash.Hasher;
 import gov.loc.repository.bagit.hash.StandardSupportedAlgorithms;
-import gov.loc.repository.bagit.reader.BagReader;
 import gov.loc.repository.bagit.writer.BagWriter;
-import gov.loc.repository.bagit.writer.ManifestWriter;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -106,15 +103,18 @@ public class MirrorTask implements Runnable {
         }
     }
 
-
     private void createMetadataOnlyDeposit() {
         String uuid = UUID.randomUUID().toString();
+        log.debug("Minted deposit ID: {}", uuid);
         try {
             Path deposit = Files.createDirectory(workDirectory.resolve(uuid));
+            log.debug("Created working directory at {}", deposit);
             PropertiesConfiguration props = createDepositProperties(uuid);
             props.save(deposit.resolve("deposit.properties").toFile());
             createMetadataOnlyBag(deposit);
+            log.debug("Created metadata-only bag");
             Files.move(deposit, depositOutbox.resolve(uuid));
+            log.debug("Moved deposit to {}", depositOutbox.resolve(uuid));
         }
         catch (IOException | ConfigurationException e) {
             throw new IllegalStateException(String.format("Could not create working directory for deposit %s", uuid), e);
@@ -129,10 +129,12 @@ public class MirrorTask implements Runnable {
         props.setProperty("depositor.userId", "easymirror");
         props.setProperty("curation.required", "no");
         props.setProperty("curation.performed", "no");
-        props.setProperty("identifier.dans-doi.registered", "no"); // TODO: correct?
-        props.setProperty("identifier.dans-doi.action", "create"); // TODO: probably no action. We want the DOI to be copied but not sent to DataCite by easy-ingest-flow
+        props.setProperty("identifier.dans-doi.registered", "no");
+        // easy-ingest-flow accepts only update or create. The MirrorCopy workflow however mixes in FlowStepNoDataciteAction will set it to 'none' and not
+        // try to update DataCit
+        props.setProperty("identifier.dans-doi.action", "create");
         props.setProperty("bag-store.bag-name", "bag");
-        props.setProperty("deposit.origin", "API"); // TODO: new type of origin?
+        props.setProperty("deposit.origin", "DataStation");
         props.setProperty("identifier.doi", filenameAttributes.getDatasetPid());
         props.setProperty("bag-store.bag-id", uuid);
         props.setProperty("identifier.urn", fileContentAttributes.getNbn());
@@ -183,7 +185,7 @@ public class MirrorTask implements Runnable {
 
     private DatasetMetadata createDatasetMetadata() throws IOException {
         DatasetMetadataReader reader = new DatasetMetadataReader(datasetVersionExportZip);
-        DatasetMetadata md =  reader.extractDatasetMetadata();
+        DatasetMetadata md = reader.extractDatasetMetadata();
         md.setDoi(filenameAttributes.getDatasetPid());
         return md;
     }

@@ -19,7 +19,7 @@ taskQueue:
   keepAliveTime: 60 seconds
 
 mirroringService:
-  inbox: '/var/opt/dans.knaw.nl/tmp/data-station/transfer-inbox'
+  inbox: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/archaeology'
   pollingInterval: 1000
   workDir: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-working-directory'
   depositOutbox: '/var/opt/dans.knaw.nl/tmp/easy-ingest-flow-inbox'
@@ -31,7 +31,7 @@ mirroringService:
 # See https://www.dropwizard.io/en/latest/manual/configuration.html#logging
 #
 logging:
-  level: INFO
+  level: DEBUG
   appenders:
     - type: file
       archive: false

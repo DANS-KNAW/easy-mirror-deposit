@@ -22,6 +22,7 @@ import io.dropwizard.setup.Environment;
 import nl.knaw.dans.easy.mirror.core.FileServiceImpl;
 import nl.knaw.dans.easy.mirror.core.MirroringService;
 import nl.knaw.dans.easy.mirror.core.TransferItemMetadataReaderImpl;
+import org.apache.velocity.app.Velocity;
 
 import java.util.concurrent.ExecutorService;
 

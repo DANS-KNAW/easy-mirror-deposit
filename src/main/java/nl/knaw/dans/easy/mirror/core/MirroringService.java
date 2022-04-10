@@ -19,6 +19,7 @@ import io.dropwizard.lifecycle.Managed;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.apache.velocity.app.Velocity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ public class MirroringService implements Managed {
     private final Path failedBox;
     private final Path workDirectory;
     private final MirrorStore mirrorStore;
+    private final Path velocityProperties;
 
     private boolean initialized = false;
     private boolean tasksCreatedInitialization = false;
@@ -64,10 +66,11 @@ public class MirroringService implements Managed {
         }
     }
 
-    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, int pollingInterval, Path inbox, Path workDirectory,
+    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, Path velocityProperties, int pollingInterval, Path inbox, Path workDirectory,
         Path depositOutbox, Path failedBox, Path mirrorStore) {
         this.executorService = executorService;
         this.transferItemMetadataReader = transferItemMetadataReader;
+        this.velocityProperties = velocityProperties;
         this.pollingInterval = pollingInterval;
         this.inbox = inbox;
         this.workDirectory = workDirectory;
@@ -79,6 +82,7 @@ public class MirroringService implements Managed {
     @Override
     public void start() throws Exception {
         log.info("Starting Mirroring Service");
+        Velocity.init(velocityProperties.toString());
         FileAlterationObserver observer = new FileAlterationObserver(inbox.toFile(), new DveFileFilter(inbox));
         observer.addListener(new EventHandler());
         FileAlterationMonitor monitor = new FileAlterationMonitor(pollingInterval);
