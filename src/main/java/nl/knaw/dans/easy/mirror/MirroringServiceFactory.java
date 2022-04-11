@@ -46,8 +46,12 @@ public class MirroringServiceFactory {
     @Valid
     private Path easyMirrorStore;
 
+    @NotNull
+    @Valid
+    private Path velocityProperties;
+
     public MirroringService build(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader) {
-        return new MirroringService(executorService, transferItemMetadataReader, pollingInterval, inbox, workDir, depositOutbox, failedBox, easyMirrorStore);
+        return new MirroringService(executorService, transferItemMetadataReader, velocityProperties, pollingInterval,  inbox, workDir, depositOutbox, failedBox, easyMirrorStore);
     }
 
     public Path getInbox() {
@@ -96,5 +100,13 @@ public class MirroringServiceFactory {
 
     public void setEasyMirrorStore(Path easyMirrorStore) {
         this.easyMirrorStore = easyMirrorStore;
+    }
+
+    public Path getVelocityProperties() {
+        return velocityProperties;
+    }
+
+    public void setVelocityProperties(Path velocityProperties) {
+        this.velocityProperties = velocityProperties;
     }
 }

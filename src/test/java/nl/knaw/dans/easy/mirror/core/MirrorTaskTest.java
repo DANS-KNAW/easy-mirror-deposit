@@ -17,12 +17,14 @@ package nl.knaw.dans.easy.mirror.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import org.apache.velocity.app.Velocity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -31,28 +33,33 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MirrorTaskTest {
     private final Path inbox = Paths.get("target/test/MirrorTaskTest/inbox");
     private final Path depositOutbox = Paths.get("target/test/MirrorTaskTest/depositOutbox");
+    private final Path workDir = Paths.get("target/test/MirrorTaskTest/workingDirectory");
     private final Path failedBox = Paths.get("target/test/MirrorTaskTest/failedBox");
-    private final Path mirrorStore = Paths.get("target/test/MirrorTaskTest/mirrorStore");
+    private final Path mirrorStoreDir = Paths.get("target/test/MirrorTaskTest/mirrorStore");
+    private final MirrorStore mirrorStore = new MirrorStore(mirrorStoreDir);
     private final Path dveRootDir = Paths.get("src/test/resources/dves/");
     // TODO: can we ensure that this ObjectMapper has the same behavior as the one from the DropWizard environment?
     private final TransferItemMetadataReader transferItemMetadataReader = new TransferItemMetadataReaderImpl(new ObjectMapper(), new FileServiceImpl());
 
     @BeforeEach
     public void setUp() throws Exception {
+        Velocity.init("src/test/resources/velocity.properties");
         FileUtils.deleteDirectory(inbox.toFile());
+        FileUtils.deleteDirectory(workDir.toFile());
         FileUtils.deleteDirectory(depositOutbox.toFile());
         FileUtils.deleteDirectory(failedBox.toFile());
-        FileUtils.deleteDirectory(mirrorStore.toFile());
+        FileUtils.deleteDirectory(mirrorStoreDir.toFile());
+        Files.createDirectories(workDir);
         Files.createDirectories(inbox);
         Files.createDirectories(depositOutbox);
         Files.createDirectories(failedBox);
-        Files.createDirectories(mirrorStore);
+        Files.createDirectories(mirrorStoreDir);
     }
 
     private MirrorTask createTask(Path dve) throws Exception {
         Path dveInInbox = inbox.resolve(dve.getFileName());
         Files.copy(dveRootDir.resolve(dve), dveInInbox);
-        return new MirrorTask(transferItemMetadataReader, dveInInbox, depositOutbox, failedBox, mirrorStore);
+        return new MirrorTask(transferItemMetadataReader, dveInInbox, workDir, depositOutbox, failedBox, mirrorStore);
     }
 
     @Test
@@ -60,17 +67,27 @@ public class MirrorTaskTest {
         Path dve = Paths.get("invalid-names/not-a-dve.zip");
         createTask(dve).run();
         assertTrue(Files.exists(failedBox.resolve(dve.getFileName())));
-        assertFalse(Files.exists(mirrorStore.resolve(dve.getFileName())));
+        assertFalse(mirrorStore.contains(dve));
         assertEquals(0, Files.list(depositOutbox).count());
     }
 
     @Test
-    public void dve_V2_goes_only_to_mirror_store() {
-
+    public void dve_V1_1_goes_only_to_mirror_store() throws Exception {
+        Path dve = Paths.get("valid/doi-10-5072-dar-lwvagyv1.1.zip");
+        createTask(dve).run();
+        assertEquals(0, Files.list(depositOutbox).count());
+        assertTrue(mirrorStore.contains(dve));
     }
 
     @Test
-    public void dve_V1_goes_to_mirror_store_and_produces_deposit() {
+    public void dve_V1_goes_to_mirror_store_and_produces_deposit() throws Exception {
+        Path dve = Paths.get("valid/doi-10-5072-dar-dmgvdhv1.0.zip");
+        createTask(dve).run();
+        assertEquals(1, Files.list(depositOutbox).count());
+        Path depositDir = Files.list(depositOutbox).collect(Collectors.toList()).get(0);
+        assertTrue(Files.exists(depositDir.resolve("deposit.properties")));
+
+        assertTrue(mirrorStore.contains(dve));
     }
 
 }

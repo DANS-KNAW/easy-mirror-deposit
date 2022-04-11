@@ -1,0 +1,147 @@
+{
+  "dcterms:modified": "2022-04-02",
+  "dcterms:creator": "DANS Archaeology Data Station (dev)",
+  "@type": "ore:ResourceMap",
+  "@id": "https://dar.dans.knaw.nl/api/datasets/export?exporter=OAI_ORE&persistentId=doi:10.5072/DAR/DMGVDH",
+  "ore:describes": {
+    "citation:Description": {
+      "dsDescription:Text": "Test"
+    },
+    "Author": {
+      "author:Name": "Admin, Dataverse",
+      "author:Affiliation": "Dataverse.org"
+    },
+    "citation:Contact": {
+      "datasetContact:Name": "Admin, Dataverse",
+      "datasetContact:Affiliation": "Dataverse.org",
+      "datasetContact:E-mail": "dataverse@mailinator.com"
+    },
+    "Subject": "Astronomy and Astrophysics",
+    "citation:Depositor": "Admin, Dataverse",
+    "dansRights:Rights Holder": "DANS",
+    "Title": "Test export",
+    "Deposit Date": "2022-04-02",
+    "dansRelationMetadata:Audience": {
+      "@id": "https://www.narcis.nl/classification/D14430",
+      "termName": [
+        {
+          "lang": "en",
+          "value": "Hydraulic engineering"
+        },
+        {
+          "lang": "nl",
+          "value": "Waterbouwkunde"
+        },
+        {
+          "lang": "en",
+          "value": "Offshore technology"
+        },
+        {
+          "lang": "nl",
+          "value": "Offshore technologie"
+        }
+      ],
+      "vocabularyUri": "https://www.narcis.nl/classification/"
+    },
+    "dansRights:Personal Data In Dataset?": "No",
+    "dansDataVaultMetadata:NBN": "urn:nbn:nl:ui:13-10d2fb06-67aa-4964-b86f-9cd59e52fa60",
+    "dansDataVaultMetadata:Bag ID": "urn:uuid:a452c9b8-471b-4f61-8ef2-27299346e159",
+    "dansDataVaultMetadata:DV PID": "doi:10.5072/DAR/DMGVDH",
+    "dansDataVaultMetadata:DV PID Version": "1.0",
+    "citation:Notes": "A copy of this dataset is stored in EASY, the DANS CTS certified repository, at http://www.persistent-identifier.nl?identifier=urn:nbn:nl:ui:13-10d2fb06-67aa-4964-b86f-9cd59e52fa60. (Note that this link will become resolvable only after the mirroring process has finished, which will take up to several days after first publication of the dataset.)",
+    "@id": "doi:10.5072/DAR/DMGVDH",
+    "@type": [
+      "ore:Aggregation",
+      "schema:Dataset"
+    ],
+    "schema:version": "1.0",
+    "schema:name": "Test export",
+    "schema:dateModified": "2022-04-02 17:02:50.63",
+    "schema:datePublished": "2022-04-02",
+    "schema:license": "http://creativecommons.org/publicdomain/zero/1.0",
+    "dvcore:fileTermsOfAccess": {
+      "dvcore:fileRequestAccess": false
+    },
+    "schema:includedInDataCatalog": "DANS Archaeology Data Station (dev)",
+    "ore:aggregates": [
+      {
+        "schema:name": "CreateSpace.RPM.Feb.2016.ISBN.1517188466.pdf",
+        "dvcore:restricted": false,
+        "schema:version": 1,
+        "dvcore:datasetVersionId": 2,
+        "@id": "https://dar.dans.knaw.nl/file.xhtml?fileId=7",
+        "schema:sameAs": "https://dar.dans.knaw.nl/api/access/datafile/7",
+        "@type": "ore:AggregatedResource",
+        "schema:fileFormat": "application/pdf",
+        "dvcore:filesize": 2277705,
+        "dvcore:storageIdentifier": "file://17feacc9aa4-8b2f9beab536",
+        "dvcore:rootDataFileId": -1,
+        "dvcore:checksum": {
+          "@type": "SHA-1",
+          "@value": "ccf4a0cc15e9ce309d8be4e9626bbc87effac405"
+        }
+      },
+      {
+        "schema:name": "Exploring Expect.pdf",
+        "dvcore:restricted": false,
+        "schema:version": 1,
+        "dvcore:datasetVersionId": 2,
+        "@id": "https://dar.dans.knaw.nl/file.xhtml?fileId=6",
+        "schema:sameAs": "https://dar.dans.knaw.nl/api/access/datafile/6",
+        "@type": "ore:AggregatedResource",
+        "schema:fileFormat": "application/pdf",
+        "dvcore:filesize": 25977953,
+        "dvcore:storageIdentifier": "file://17feacc9e82-1166a260db6b",
+        "dvcore:rootDataFileId": -1,
+        "dvcore:checksum": {
+          "@type": "SHA-1",
+          "@value": "196007cdf6d4358cd3ffd0fde4c197ae6a27c323"
+        }
+      },
+      {
+        "schema:name": "formal-05-07-04.pdf",
+        "dvcore:restricted": false,
+        "schema:version": 1,
+        "dvcore:datasetVersionId": 2,
+        "@id": "https://dar.dans.knaw.nl/file.xhtml?fileId=8",
+        "schema:sameAs": "https://dar.dans.knaw.nl/api/access/datafile/8",
+        "@type": "ore:AggregatedResource",
+        "schema:fileFormat": "application/pdf",
+        "dvcore:filesize": 5542288,
+        "dvcore:storageIdentifier": "file://17feacca029-99f57ec50023",
+        "dvcore:rootDataFileId": -1,
+        "dvcore:checksum": {
+          "@type": "SHA-1",
+          "@value": "e29cf3ae1fbef9b3031d8ca2044c2e8d70013814"
+        }
+      }
+    ],
+    "schema:hasPart": [
+      "https://dar.dans.knaw.nl/file.xhtml?fileId=7",
+      "https://dar.dans.knaw.nl/file.xhtml?fileId=6",
+      "https://dar.dans.knaw.nl/file.xhtml?fileId=8"
+    ]
+  },
+  "@context": {
+    "Author": "http://purl.org/dc/terms/creator",
+    "Deposit Date": "http://purl.org/dc/terms/dateSubmitted",
+    "Subject": "http://purl.org/dc/terms/subject",
+    "Title": "http://purl.org/dc/terms/title",
+    "author": "https://dataverse.org/schema/citation/author#",
+    "citation": "https://dataverse.org/schema/citation/",
+    "dansDataVaultMetadata": "https://dar.dans.knaw.nl/schema/dansDataVaultMetadata#",
+    "dansRelationMetadata": "https://dar.dans.knaw.nl/schema/dansRelationMetadata#",
+    "dansRights": "https://dar.dans.knaw.nl/schema/dansRights#",
+    "datasetContact": "https://dataverse.org/schema/citation/datasetContact#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dsDescription": "https://dataverse.org/schema/citation/dsDescription#",
+    "dvcore": "https://dataverse.org/schema/core#",
+    "lang": "@language",
+    "ore": "http://www.openarchives.org/ore/terms/",
+    "schema": "http://schema.org/",
+    "termName": "https://schema.org/name",
+    "value": "@value",
+    "vocabularyName": "https://dataverse.org/schema/vocabularyName",
+    "vocabularyUri": "https://dataverse.org/schema/vocabularyUri"
+  }
+}
