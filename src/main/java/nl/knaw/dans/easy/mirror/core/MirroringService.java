@@ -83,13 +83,17 @@ public class MirroringService implements Managed {
     public void start() throws Exception {
         log.info("Starting Mirroring Service");
         Velocity.init(velocityProperties.toString());
+        log.debug("Initialized Velocity");
         FileAlterationObserver observer = new FileAlterationObserver(inbox.toFile(), new DveFileFilter(inbox));
         observer.addListener(new EventHandler());
+        log.debug("Added listener");
         FileAlterationMonitor monitor = new FileAlterationMonitor(pollingInterval);
         monitor.addObserver(observer);
+        log.debug("Added observer");
         try {
-            log.debug("Start monitor");
+            log.debug("Starting monitor");
             monitor.start();
+            log.debug("Monitor started");
         }
         catch (Exception e) {
             throw new IllegalStateException(String.format("Could not start monitoring %s", inbox), e);

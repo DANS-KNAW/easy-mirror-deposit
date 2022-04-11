@@ -80,11 +80,11 @@ public class MirrorTask implements Runnable {
             if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
                 createMetadataOnlyDeposit();
             } else {
-                log.info("DVE version > 1.0; SKIPPING depposit creation");
+                log.info("DVE version > 1.0; SKIPPING deposit creation; " + datasetVersionExportZip.getFileName());
             }
 
             if (mirrorStore.contains(datasetVersionExportZip)) {
-                throw new IllegalArgumentException("DVE already stored");
+                throw new IllegalArgumentException("DVE already stored: " + datasetVersionExportZip.getFileName());
             }
             try {
                 mirrorStore.store(datasetVersionExportZip);
@@ -102,7 +102,6 @@ public class MirrorTask implements Runnable {
             catch (IOException ioe) {
                 throw new IllegalStateException("Cannot move invalid DVE to failedBox", ioe);
             }
-
         }
     }
 
