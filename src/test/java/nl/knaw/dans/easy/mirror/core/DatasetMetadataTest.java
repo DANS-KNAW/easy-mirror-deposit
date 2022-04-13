@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class DatasetMetadataTest {
 
@@ -29,16 +31,37 @@ public class DatasetMetadataTest {
         DatasetMetadata md = new DatasetMetadata(jsonLd);
         Assertions.assertEquals("Test export", md.getTitle());
         Assertions.assertEquals("Test", md.getDescription());
-        Assertions.assertEquals("Admin, Dataverse", md.getCreator());
-        Assertions.assertEquals("D14430", md.getAudience());
+        Assertions.assertEquals(Collections.singletonList("Admin, Dataverse"), md.getCreators());
+        Assertions.assertEquals(Collections.singletonList("D14430"), md.getAudiences());
         Assertions.assertEquals("2100-01-01", md.getAvailable());
         Assertions.assertEquals("NO_ACCESS", md.getAccessRights());
+        Assertions.assertEquals(Collections.singletonList("DANS"), md.getRightsHolders());
     }
 
     @Test
     public void should_handle_multi_value_fields() throws Exception {
-
+        String jsonLd = FileUtils.readFileToString(Paths.get("src/test/resources/jsonld/example-multi-value.json").toFile(), "UTF-8");
+        DatasetMetadata md = new DatasetMetadata(jsonLd);
+        Assertions.assertEquals("Test multi-value", md.getTitle());
+        Assertions.assertEquals("Descr 1\n\nDescr 2", md.getDescription());
+        Assertions.assertEquals(Arrays.asList("Admin, Dataverse", "Author 2"), md.getCreators());
+        Assertions.assertEquals(Arrays.asList("D30100", "D16700", "D38000"), md.getAudiences());
+        Assertions.assertEquals("2100-01-01", md.getAvailable());
+        Assertions.assertEquals("NO_ACCESS", md.getAccessRights());
+        Assertions.assertEquals(Arrays.asList("DANS", "BAILE"), md.getRightsHolders());
     }
 
+    @Test
+    public void should_handle_audience_as_string() throws Exception {
+        String jsonLd = FileUtils.readFileToString(Paths.get("src/test/resources/jsonld/example-audience-as-string-single.json").toFile(), "UTF-8");
+        DatasetMetadata md = new DatasetMetadata(jsonLd);
+        Assertions.assertEquals(Collections.singletonList("D30100"), md.getAudiences());
+    }
 
+    @Test
+    public void should_handle_audiences_as_strings_multi() throws Exception {
+        String jsonLd = FileUtils.readFileToString(Paths.get("src/test/resources/jsonld/example-audience-as-string-multi.json").toFile(), "UTF-8");
+        DatasetMetadata md = new DatasetMetadata(jsonLd);
+        Assertions.assertEquals(Arrays.asList("D30100", "D16700", "D38000"), md.getAudiences());
+    }
 }

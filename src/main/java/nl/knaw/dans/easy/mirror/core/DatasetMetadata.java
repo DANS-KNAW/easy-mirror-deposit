@@ -18,19 +18,27 @@ package nl.knaw.dans.easy.mirror.core;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DatasetMetadata {
     private String doi;
     private String nbn;
     private String title;
     private String description;
-    private String creator;
+    private List<String> creators;
     private String created;
     private String published;
     private String available;
-    private String audience;
+    private List<String> audiences;
     private String accessRights;
-    private String rightsHolder;
+    private List<String> rightsHolders;
 
     public DatasetMetadata() {
     }
@@ -39,18 +47,72 @@ public class DatasetMetadata {
         DocumentContext context = JsonPath.parse(jsonLdString);
         nbn = context.read("$['ore:describes']['dansDataVaultMetadata:NBN']");
         title = context.read("$['ore:describes']['Title']");
-        description = context.read("$['ore:describes']['citation:Description']['dsDescription:Text']");
-        creator = context.read("$['ore:describes']['Author']['author:Name']");
+        description = StringUtils.join(readMultiValue(context,
+            "$['ore:describes']['citation:Description']['dsDescription:Text']",
+            "$['ore:describes']['citation:Description'][*]['dsDescription:Text']"), "\n\n");
+        creators = readMultiValue(context,
+            "$['ore:describes']['Author']['author:Name']",
+            "$['ore:describes']['Author'][*]['author:Name']");
+
         published = context.read("$['ore:describes']['schema:datePublished']");
-        try {
-            created = context.read("$['ore:describes']['citation:Date Produced']");
-        } catch (PathNotFoundException e) {
-            created = published; // Since Date Produced is not required in the Data Station, fall back to publication dates
-        }
-        available = "2100-01-01"; // Arbitrary date in the future. This will never be available throught EASY.
-        audience = extractNarcisIdFromUri(context.read("$['ore:describes']['dansRelationMetadata:Audience']['@id']"));
+        created = readStringWithDefaultValue(context, "$['ore:describes']['citation:Date Produced']", published);
+        available = "2100-01-01"; // Arbitrary date in the future. This will never be available through EASY.
+        audiences = readMultiValue(context, "$['ore:describes']['dansRelationMetadata:Audience']['@id']",
+            "$['ore:describes']['dansRelationMetadata:Audience'][*]['@id']").stream().map(DatasetMetadata::extractNarcisIdFromUri).collect(
+            Collectors.toList());
+        // If no audiences were found, it could be that there are none, but it could also be that they are not stored as objects with an @id field, but rather as simple
+        // Strings containing the term URIs. Maybe this happens when Dataverse is unable to download metadata from Skosmos?
+        List<String> simpleStringUris = readOnlyStringElements(context, "$['ore:describes']['dansRelationMetadata:Audience']").stream()
+            .map(DatasetMetadata::extractNarcisIdFromUri).collect(
+                Collectors.toList());
+        audiences.addAll(simpleStringUris);
         accessRights = "NO_ACCESS"; // No access through EASY
-        rightsHolder = context.read("$['ore:describes']['dansRights:Rights Holder']");
+        rightsHolders = readMultiValueString(context, "$['ore:describes']['dansRights:Rights Holder']");
+    }
+
+    private static List<String> readMultiValue(DocumentContext context, String pathSingle, String pathMulti) {
+        try {
+            return Collections.singletonList(context.read(pathSingle));
+        }
+        catch (PathNotFoundException e) {
+            return context.read(pathMulti);
+        }
+    }
+
+    private static List<String> readOnlyStringElements(DocumentContext context, String path) {
+        Object value = context.read(path);
+        if (value instanceof String) {
+            return Collections.singletonList((String) value);
+        }
+        else if (!(value instanceof LinkedHashMap)){
+            LinkedList<String> results = new LinkedList<>();
+            Iterable<Object> objects = (Iterable<Object>) value;
+            for (Object o : objects) {
+                if (o instanceof String)
+                    results.add((String) o);
+            }
+            return results;
+        }
+        return Collections.emptyList();
+    }
+
+    private static List<String> readMultiValueString(DocumentContext context, String path) {
+        Object value = context.read(path);
+        if (value instanceof String) {
+            return Collections.singletonList((String) value);
+        }
+        else {
+            return (List<String>) value;
+        }
+    }
+
+    private static String readStringWithDefaultValue(DocumentContext context, String path, String defaultValue) {
+        try {
+            return context.read(path);
+        }
+        catch (PathNotFoundException e) {
+            return defaultValue;
+        }
     }
 
     private static String extractNarcisIdFromUri(String narcisTermUri) {
@@ -90,12 +152,12 @@ public class DatasetMetadata {
         this.description = description;
     }
 
-    public String getCreator() {
-        return creator;
+    public List<String> getCreators() {
+        return creators;
     }
 
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setCreators(List<String> creators) {
+        this.creators = creators;
     }
 
     public String getCreated() {
@@ -122,12 +184,12 @@ public class DatasetMetadata {
         this.available = available;
     }
 
-    public String getAudience() {
-        return audience;
+    public List<String> getAudiences() {
+        return audiences;
     }
 
-    public void setAudience(String audience) {
-        this.audience = audience;
+    public void setAudiences(List<String> audiences) {
+        this.audiences = audiences;
     }
 
     public String getAccessRights() {
@@ -138,11 +200,11 @@ public class DatasetMetadata {
         this.accessRights = accessRights;
     }
 
-    public String getRightsHolder() {
-        return rightsHolder;
+    public List<String> getRightsHolders() {
+        return rightsHolders;
     }
 
-    public void setRightsHolder(String rightsHolder) {
-        this.rightsHolder = rightsHolder;
+    public void setRightsHolders(List<String> rightsHolders) {
+        this.rightsHolders = rightsHolders;
     }
 }
