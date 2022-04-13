@@ -103,6 +103,10 @@ public class MirrorTask implements Runnable {
                 throw new IllegalStateException("Cannot move invalid DVE to failedBox", ioe);
             }
         }
+        catch (Exception e) {
+            // Java 8 still uses printStackTrace to output exceptions, so better to log this ourselves
+            log.error("FAILEd to process {}", datasetVersionExportZip.getFileName(), e);
+        }
     }
 
     private void createMetadataOnlyDeposit() {
