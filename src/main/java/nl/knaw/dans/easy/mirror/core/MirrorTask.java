@@ -94,7 +94,9 @@ public class MirrorTask implements Runnable {
             }
             log.info("SUCCESS. Done processing {}", datasetVersionExportZip.getFileName());
         }
-        catch (InvalidTransferItemException | IllegalArgumentException e) {
+        catch (Exception e) {
+            // Java 8 still uses printStackTrace to output exceptions, so better to log all fatal exceptions  ourselves.
+            // Not including Errors here, because Errors include things like OOM, which will crash the whole service anyway.
             try {
                 log.error("FAIL. Could not process DVE {}, moving to failedBox.", datasetVersionExportZip.getFileName(), e);
                 Files.move(datasetVersionExportZip, failedBox.resolve(datasetVersionExportZip.getFileName()));
@@ -102,10 +104,6 @@ public class MirrorTask implements Runnable {
             catch (IOException ioe) {
                 throw new IllegalStateException("Cannot move invalid DVE to failedBox", ioe);
             }
-        }
-        catch (Exception e) {
-            // Java 8 still uses printStackTrace to output exceptions, so better to log this ourselves
-            log.error("FAILEd to process {}", datasetVersionExportZip.getFileName(), e);
         }
     }
 
