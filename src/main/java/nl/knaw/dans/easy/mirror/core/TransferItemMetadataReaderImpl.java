@@ -17,6 +17,7 @@ package nl.knaw.dans.easy.mirror.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nl.knaw.dans.lib.dataverse.model.ExportedDatasetVersionName;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -29,15 +30,9 @@ import java.time.ZoneId;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
 public class TransferItemMetadataReaderImpl implements TransferItemMetadataReader {
-    private static final String DOI_PATTERN = "(?<doi>doi-10-[0-9]{4,}-[A-Za-z0-9]{2,}-[A-Za-z0-9]{6})-?";
-    private static final String SCHEMA_PATTERN = "(?<schema>datacite)?.?";
-    private static final String DATASET_VERSION_PATTERN = "v(?<major>[0-9]+).(?<minor>[0-9]+)";
-    private static final String EXTENSION_PATTERN = "(?<extension>.zip|.xml)";
-    private static final Pattern PATTERN = Pattern.compile(DOI_PATTERN + SCHEMA_PATTERN + DATASET_VERSION_PATTERN + EXTENSION_PATTERN);
     private final ObjectMapper objectMapper;
     private final FileService fileService;
 
@@ -49,23 +44,18 @@ public class TransferItemMetadataReaderImpl implements TransferItemMetadataReade
     @Override
     public FilenameAttributes getFilenameAttributes(Path path) throws InvalidTransferItemException {
         Path filename = path.getFileName();
-        Matcher matcher = PATTERN.matcher(filename.toString());
+
         FilenameAttributes result = new FilenameAttributes();
         result.setDveFilePath(path.toString());
 
-        if (matcher.matches()) {
-            if (matcher.group("doi") != null) {
-                String datasetPid = matcher.group("doi").substring(4).toUpperCase().replaceFirst("-", ".").replaceAll("-", "/");
-                result.setDatasetPid(datasetPid);
-            }
-            if (matcher.group("major") != null) {
-                result.setVersionMajor(Integer.parseInt(matcher.group("major")));
-            }
-            if (matcher.group("minor") != null) {
-                result.setVersionMinor(Integer.parseInt(matcher.group("minor")));
-            }
+        try {
+            ExportedDatasetVersionName dveName = new ExportedDatasetVersionName(filename.toString());
+            String datasetPid = dveName.getSpaceName().substring(4).toUpperCase().replaceFirst("-", ".").replaceAll("-", "/");
+            result.setDatasetPid(datasetPid);
+            result.setVersionMajor(dveName.getMajorVersion());
+            result.setVersionMinor(dveName.getMinorVersion());
         }
-        else {
+        catch (IllegalArgumentException e) {
             throw new InvalidTransferItemException(String.format("filename %s does not match expected pattern", filename));
         }
 
@@ -148,13 +138,12 @@ public class TransferItemMetadataReaderImpl implements TransferItemMetadataReade
 
     @Override
     public Optional<Path> getAssociatedXmlFile(Path path) {
-        Matcher matcher = PATTERN.matcher(path.getFileName().toString());
-        String xml = matcher.matches() ? matcher.group("doi") + "-datacite.v" + matcher.group("major") + "." + matcher.group("minor") + ".xml" : null;
-
-        if (xml != null) {
+        try {
+            ExportedDatasetVersionName dveName = new ExportedDatasetVersionName(path.getFileName().toString());
+            String xml = dveName.getSpaceName() + "-datacite.v" + dveName.getMajorVersion() + "." + dveName.getMinorVersion() + ".xml";
             return Optional.of(path.getParent().resolve(Paths.get(xml)));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
         }
-
-        return Optional.empty();
     }
 }
