@@ -37,18 +37,23 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.Date;
 import java.util.UUID;
 
 import static org.joda.time.DateTimeZone.UTC;
 
 public class MirrorTask implements Runnable {
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final Logger log = LoggerFactory.getLogger(MirrorTask.class);
 
     private final TransferItemMetadataReader transferItemMetadataReader;
     private final Path datasetVersionExportZip;
+    private final Date ignoreMigratedDatasetUpdatesPublishedBefore;
     private final Path workDirectory;
     private final Path depositOutbox;
     private final Path failedBox;
@@ -58,10 +63,12 @@ public class MirrorTask implements Runnable {
     private FileContentAttributes fileContentAttributes;
     private FilesystemAttributes filesystemAttributes;
 
-    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path workDirectory, Path depositOutbox, Path failedBox,
+    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Date ignoreMigratedDatasetUpdatesPublishedBefore, Path workDirectory,
+        Path depositOutbox, Path failedBox,
         MirrorStore mirrorStore) {
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.datasetVersionExportZip = datasetVersionExportZip;
+        this.ignoreMigratedDatasetUpdatesPublishedBefore = ignoreMigratedDatasetUpdatesPublishedBefore;
         this.workDirectory = workDirectory;
         this.depositOutbox = depositOutbox;
         this.failedBox = failedBox;
@@ -77,11 +84,31 @@ public class MirrorTask implements Runnable {
             fileContentAttributes = transferItemMetadataReader.getFileContentAttributes(datasetVersionExportZip);
             filesystemAttributes = transferItemMetadataReader.getFilesystemAttributes(datasetVersionExportZip);
 
+            if (isMigratedDataset(filenameAttributes.getDatasetPid())) {
+                log.info("Dataset was migrated from EASY");
+                if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
+                    log.warn("Migrated dataset v1.0. Must be a migration back-log item. Not processing (deleting DVE)");
+                    Files.delete(datasetVersionExportZip);
+                    return;
+                }
+                else {
+                    DatasetMetadata md = createDatasetMetadata();
+
+                    if (getTimestampFromString(md.getModified()).before(ignoreMigratedDatasetUpdatesPublishedBefore)) {
+                        log.warn("Migrated dataset > v1.0 but published on {}, so before the cut-off date of {} and probably a migration back-log item. Not processing (deleting DVE)",
+                            md.getModified(),
+                            ignoreMigratedDatasetUpdatesPublishedBefore);
+                        Files.delete(datasetVersionExportZip);
+                        return;
+                    }
+                }
+            }
+
             if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
                 createMetadataOnlyDeposit();
             }
             else {
-                log.info("DVE version > 1.0; SKIPPING deposit creation; " + datasetVersionExportZip.getFileName());
+                log.info("DVE version > 1.0; SKIPPING landing page deposit creation; " + datasetVersionExportZip.getFileName());
             }
 
             if (mirrorStore.contains(datasetVersionExportZip)) {
@@ -126,6 +153,20 @@ public class MirrorTask implements Runnable {
         catch (IOException | ConfigurationException e) {
             throw new IllegalStateException(String.format("Could not create working directory for deposit %s", uuid), e);
         }
+    }
+
+    private Date getTimestampFromString(String s) {
+        try {
+            return dateFormat.parse(s);
+        }
+        catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private boolean isMigratedDataset(String doi) {
+        log.trace("isMigratedDataset({})", doi);
+        return doi.startsWith("10.17026/DANS");
     }
 
     private PropertiesConfiguration createDepositProperties(String uuid) {

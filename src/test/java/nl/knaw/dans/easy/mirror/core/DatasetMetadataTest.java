@@ -31,6 +31,8 @@ public class DatasetMetadataTest {
         DatasetMetadata md = new DatasetMetadata(jsonLd);
         Assertions.assertEquals("Test export", md.getTitle());
         Assertions.assertEquals("Test", md.getDescription());
+        Assertions.assertEquals("2022-04-02 17:02:50.63", md.getModified());
+        Assertions.assertEquals("2022-04-02", md.getPublished());
         Assertions.assertEquals(Collections.singletonList("Admin, Dataverse"), md.getCreators());
         Assertions.assertEquals(Collections.singletonList("D14430"), md.getAudiences());
         Assertions.assertEquals("2100-01-01", md.getAvailable());

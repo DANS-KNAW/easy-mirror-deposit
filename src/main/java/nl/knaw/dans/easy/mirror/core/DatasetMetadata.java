@@ -34,6 +34,7 @@ public class DatasetMetadata {
     private String description;
     private List<String> creators;
     private String created;
+    private String modified;
     private String published;
     private String available;
     private List<String> audiences;
@@ -54,6 +55,7 @@ public class DatasetMetadata {
             "$['ore:describes']['Author']['author:Name']",
             "$['ore:describes']['Author'][*]['author:Name']");
 
+        modified = context.read("$['ore:describes']['schema:dateModified']");
         published = context.read("$['ore:describes']['schema:datePublished']");
         created = readStringWithDefaultValue(context, "$['ore:describes']['citation:Date Produced']", published);
         available = "2100-01-01"; // Arbitrary date in the future. This will never be available through EASY.
@@ -166,6 +168,14 @@ public class DatasetMetadata {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    public String getModified() {
+        return modified;
+    }
+
+    public void setModified(String modified) {
+        this.modified = modified;
     }
 
     public String getPublished() {

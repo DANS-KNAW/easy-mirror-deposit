@@ -26,6 +26,10 @@ mirroringService:
   failedBox: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-failed'
   easyMirrorStore: '/data/easy-mirror-store'
   velocityProperties: '/etc/opt/dans.knaw.nl/easy-mirror-deposit/velocity.properties'
+  #
+  # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
+  #
+  ignoreMigratedDatasetUpdatesPublishedBefore: '2022-06-22'
 
 #
 # See https://www.dropwizard.io/en/latest/manual/configuration.html#logging
