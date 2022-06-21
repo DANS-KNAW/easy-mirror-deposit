@@ -27,7 +27,7 @@
 
     <groupId>nl.knaw.dans</groupId>
     <artifactId>easy-mirror-deposit</artifactId>
-    <version>0.0.7</version>
+    <version>0.0.8-SNAPSHOT</version>
 
     <name>Easy Mirror Deposit</name>
     <url>https://github.com/DANS-KNAW/easy-mirror-deposit</url>
@@ -40,7 +40,7 @@
 
     <scm>
         <developerConnection>scm:git:https://github.com/DANS-KNAW/easy-mirror-deposit</developerConnection>
-        <tag>v0.0.7</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencies>
