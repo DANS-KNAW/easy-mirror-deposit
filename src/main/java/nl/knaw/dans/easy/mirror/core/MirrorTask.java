@@ -79,19 +79,22 @@ public class MirrorTask implements Runnable {
 
             if (filenameAttributes.getVersionMajor() == 1 && filenameAttributes.getVersionMinor() == 0) {
                 createMetadataOnlyDeposit();
-            } else {
+            }
+            else {
                 log.info("DVE version > 1.0; SKIPPING deposit creation; " + datasetVersionExportZip.getFileName());
             }
 
             if (mirrorStore.contains(datasetVersionExportZip)) {
-                throw new IllegalArgumentException("DVE already stored: " + datasetVersionExportZip.getFileName());
+                log.warn("DVE already stored: {}. Deleting DVE", datasetVersionExportZip.getFileName());
+                Files.delete(datasetVersionExportZip);
             }
-            try {
-                mirrorStore.store(datasetVersionExportZip);
-            }
-            catch (IOException e) {
-                throw new IllegalStateException("Could not move DVE to EASY mirror store", e);
-            }
+            else
+                try {
+                    mirrorStore.store(datasetVersionExportZip);
+                }
+                catch (IOException e) {
+                    throw new IllegalStateException("Could not move DVE to EASY mirror store", e);
+                }
             log.info("SUCCESS. Done processing {}", datasetVersionExportZip.getFileName());
         }
         catch (Exception e) {

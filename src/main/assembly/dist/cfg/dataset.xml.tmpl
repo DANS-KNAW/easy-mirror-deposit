@@ -11,7 +11,7 @@
          https://easy.dans.knaw.nl/schemas/md/ddm/ddm.xsd">
     <ddm:profile>
         <dc:title>${metadata.Title}</dc:title>
-        <dcterms:description xml:lang="en">${metadata.Description}</dcterms:description>
+        <dcterms:description xml:lang="en"><![CDATA[${metadata.Description}]]></dcterms:description>
       #foreach( $Creator in ${metadata.Creators} )
         <dc:creator>${Creator}</dc:creator>
       #end
