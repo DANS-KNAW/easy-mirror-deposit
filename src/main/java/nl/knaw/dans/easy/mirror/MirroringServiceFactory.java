@@ -21,9 +21,14 @@ import nl.knaw.dans.easy.mirror.core.TransferItemMetadataReader;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
 public class MirroringServiceFactory {
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     @NotNull
     @Valid
     private Path inbox;
@@ -50,8 +55,13 @@ public class MirroringServiceFactory {
     @Valid
     private Path velocityProperties;
 
+    @NotNull
+    @Valid
+    private Date ignoreMigratedDatasetUpdatesPublishedBefore;
+
     public MirroringService build(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader) {
-        return new MirroringService(executorService, transferItemMetadataReader, velocityProperties, pollingInterval,  inbox, workDir, depositOutbox, failedBox, easyMirrorStore);
+        return new MirroringService(executorService, transferItemMetadataReader, velocityProperties, ignoreMigratedDatasetUpdatesPublishedBefore, pollingInterval, inbox, workDir,
+            depositOutbox, failedBox, easyMirrorStore);
     }
 
     public Path getInbox() {
@@ -108,5 +118,18 @@ public class MirroringServiceFactory {
 
     public void setVelocityProperties(Path velocityProperties) {
         this.velocityProperties = velocityProperties;
+    }
+
+    public Date getIgnoreMigratedDatasetUpdatesPublishedBefore() {
+        return ignoreMigratedDatasetUpdatesPublishedBefore;
+    }
+
+    public void setIgnoreMigratedDatasetUpdatesPublishedBefore(String date) {
+        try {
+            this.ignoreMigratedDatasetUpdatesPublishedBefore = dateFormat.parse(date);
+        }
+        catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

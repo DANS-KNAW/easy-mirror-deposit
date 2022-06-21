@@ -25,6 +25,8 @@ mirroringService:
   depositOutbox: 'data/easy-ingest-flow-inbox'
   failedBox: 'data/easy-mirror-deposit-failed'
   easyMirrorStore: 'data/easy-mirror-store'
+  velocityProperties: 'etc/velocity.properties'
+  ignoreMigratedDatasetUpdatesPublishedBefore: '2022-06-22'
 
 logging:
   level: INFO

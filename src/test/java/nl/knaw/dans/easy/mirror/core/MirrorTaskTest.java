@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MirrorTaskTest {
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+
     private final Path inbox = Paths.get("target/test/MirrorTaskTest/inbox");
     private final Path depositOutbox = Paths.get("target/test/MirrorTaskTest/depositOutbox");
     private final Path workDir = Paths.get("target/test/MirrorTaskTest/workingDirectory");
@@ -59,7 +65,8 @@ public class MirrorTaskTest {
     private MirrorTask createTask(Path dve) throws Exception {
         Path dveInInbox = inbox.resolve(dve.getFileName());
         Files.copy(dveRootDir.resolve(dve), dveInInbox);
-        return new MirrorTask(transferItemMetadataReader, dveInInbox, workDir, depositOutbox, failedBox, mirrorStore);
+        Date oldDate = dateFormat.parse("2000-01-01");
+        return new MirrorTask(transferItemMetadataReader, dveInInbox, oldDate, workDir, depositOutbox, failedBox, mirrorStore);
     }
 
     @Test

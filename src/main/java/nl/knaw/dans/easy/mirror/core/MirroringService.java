@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
@@ -41,6 +42,7 @@ public class MirroringService implements Managed {
     private final Path workDirectory;
     private final MirrorStore mirrorStore;
     private final Path velocityProperties;
+    private final Date ignoreMigratedDatasetUpdatesPublishedBefore;
 
     private boolean initialized = false;
     private boolean tasksCreatedInitialization = false;
@@ -66,11 +68,12 @@ public class MirroringService implements Managed {
         }
     }
 
-    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, Path velocityProperties, int pollingInterval, Path inbox, Path workDirectory,
+    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, Path velocityProperties, Date ignoreMigratedDatasetUpdatesPublishedBefore, int pollingInterval, Path inbox, Path workDirectory,
         Path depositOutbox, Path failedBox, Path mirrorStore) {
         this.executorService = executorService;
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.velocityProperties = velocityProperties;
+        this.ignoreMigratedDatasetUpdatesPublishedBefore = ignoreMigratedDatasetUpdatesPublishedBefore;
         this.pollingInterval = pollingInterval;
         this.inbox = inbox;
         this.workDirectory = workDirectory;
@@ -118,7 +121,7 @@ public class MirroringService implements Managed {
     private void scheduleDatasetVersionExport(Path dve) {
         log.info("Scheduling " + dve.getFileName());
         try {
-            Path movedDve = Files.move(dve, workDirectory.resolve(dve.getFileName()));
+            Path workingDve = Files.move(dve, workDirectory.resolve(dve.getFileName()));
             Optional<Path> optXmlFile = transferItemMetadataReader.getAssociatedXmlFile(dve);
             if (optXmlFile.isPresent()) {
                 log.debug("Removing associated XML file {}", optXmlFile.get());
@@ -126,7 +129,7 @@ public class MirroringService implements Managed {
             } else {
                 log.warn("Associated XML file was not found");
             }
-            executorService.execute(new MirrorTask(transferItemMetadataReader, movedDve, workDirectory, depositOutbox, failedBox, mirrorStore));
+            executorService.execute(new MirrorTask(transferItemMetadataReader, workingDve, ignoreMigratedDatasetUpdatesPublishedBefore, workDirectory, depositOutbox, failedBox, mirrorStore));
         }
         catch (IOException e) {
             log.error("Could not move DVE to work directory", e);

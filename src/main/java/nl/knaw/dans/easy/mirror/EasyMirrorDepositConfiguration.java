@@ -35,7 +35,6 @@ public class EasyMirrorDepositConfiguration extends Configuration {
     @Valid
     private MirroringServiceFactory mirroringService;
 
-
     public ExecutorServiceFactory getTaskQueue() {
         return taskQueue;
     }
