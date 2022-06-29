@@ -18,6 +18,7 @@ package nl.knaw.dans.easy.mirror.core;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
@@ -46,8 +47,8 @@ public class DatasetMetadata {
 
     public DatasetMetadata(String jsonLdString) {
         DocumentContext context = JsonPath.parse(jsonLdString);
-        nbn = context.read("$['ore:describes']['dansDataVaultMetadata:NBN']");
-        title = context.read("$['ore:describes']['Title']");
+        nbn = readSingleValue(context,"$['ore:describes']['dansDataVaultMetadata:NBN']");
+        title = readSingleValue(context,"$['ore:describes']['Title']");
         description = StringUtils.join(readMultiValue(context,
             "$['ore:describes']['citation:Description']['dsDescription:Text']",
             "$['ore:describes']['citation:Description'][*]['dsDescription:Text']"), "\n\n");
@@ -55,10 +56,10 @@ public class DatasetMetadata {
             "$['ore:describes']['Author']['author:Name']",
             "$['ore:describes']['Author'][*]['author:Name']");
 
-        modified = context.read("$['ore:describes']['schema:dateModified']");
-        published = context.read("$['ore:describes']['schema:datePublished']");
+        modified = readSingleValue(context,"$['ore:describes']['schema:dateModified']");
+        published = readSingleValue(context,"$['ore:describes']['schema:datePublished']");
         created = readStringWithDefaultValue(context, "$['ore:describes']['citation:Date Produced']", published);
-        available = "2100-01-01"; // Arbitrary date in the future. This will never be available through EASY.
+        available = published;
         audiences = readMultiValue(context, "$['ore:describes']['dansRelationMetadata:Audience']['@id']",
             "$['ore:describes']['dansRelationMetadata:Audience'][*]['@id']").stream().map(DatasetMetadata::extractNarcisIdFromUri).collect(
             Collectors.toList());
@@ -72,9 +73,13 @@ public class DatasetMetadata {
         rightsHolders = readMultiValueString(context, "$['ore:describes']['dansRights:Rights Holder']");
     }
 
+    private static String readSingleValue(DocumentContext context, String path) {
+        return StringEscapeUtils.escapeXml(context.read(path));
+    }
+
     private static List<String> readMultiValue(DocumentContext context, String pathSingle, String pathMulti) {
         try {
-            return Collections.singletonList(context.read(pathSingle));
+            return Collections.singletonList(StringEscapeUtils.escapeXml(context.read(pathSingle)));
         }
         catch (PathNotFoundException e) {
             return context.read(pathMulti);
@@ -91,7 +96,7 @@ public class DatasetMetadata {
             Iterable<Object> objects = (Iterable<Object>) value;
             for (Object o : objects) {
                 if (o instanceof String)
-                    results.add((String) o);
+                    results.add(StringEscapeUtils.escapeXml((String) o));
             }
             return results;
         }
@@ -110,7 +115,7 @@ public class DatasetMetadata {
 
     private static String readStringWithDefaultValue(DocumentContext context, String path, String defaultValue) {
         try {
-            return context.read(path);
+            return StringEscapeUtils.escapeXml(context.read(path));
         }
         catch (PathNotFoundException e) {
             return defaultValue;

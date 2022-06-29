@@ -29,13 +29,13 @@ public class DatasetMetadataTest {
     public void should_extract_all_fields_from_valid_jsonld_example() throws Exception {
         String jsonLd = FileUtils.readFileToString(Paths.get("src/test/resources/jsonld/example1.json").toFile(), "UTF-8");
         DatasetMetadata md = new DatasetMetadata(jsonLd);
-        Assertions.assertEquals("Test export", md.getTitle());
+        Assertions.assertEquals("Test export &amp; special chars", md.getTitle());
         Assertions.assertEquals("Test", md.getDescription());
         Assertions.assertEquals("2022-04-02 17:02:50.63", md.getModified());
         Assertions.assertEquals("2022-04-02", md.getPublished());
         Assertions.assertEquals(Collections.singletonList("Admin, Dataverse"), md.getCreators());
         Assertions.assertEquals(Collections.singletonList("D14430"), md.getAudiences());
-        Assertions.assertEquals("2100-01-01", md.getAvailable());
+        Assertions.assertEquals("2022-04-02", md.getAvailable());
         Assertions.assertEquals("NO_ACCESS", md.getAccessRights());
         Assertions.assertEquals(Collections.singletonList("DANS"), md.getRightsHolders());
     }
@@ -48,7 +48,7 @@ public class DatasetMetadataTest {
         Assertions.assertEquals("Descr 1\n\nDescr 2", md.getDescription());
         Assertions.assertEquals(Arrays.asList("Admin, Dataverse", "Author 2"), md.getCreators());
         Assertions.assertEquals(Arrays.asList("D30100", "D16700", "D38000"), md.getAudiences());
-        Assertions.assertEquals("2100-01-01", md.getAvailable());
+        Assertions.assertEquals("2022-04-13", md.getAvailable());
         Assertions.assertEquals("NO_ACCESS", md.getAccessRights());
         Assertions.assertEquals(Arrays.asList("DANS", "BAILE"), md.getRightsHolders());
     }
