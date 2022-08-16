@@ -15,8 +15,6 @@
  */
 package nl.knaw.dans.easy.mirror.core;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;

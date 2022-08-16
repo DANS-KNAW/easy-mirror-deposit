@@ -29,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.zip.ZipFile;
 
 public class TransferItemMetadataReaderImpl implements TransferItemMetadataReader {
