@@ -22,14 +22,14 @@
     <parent>
         <artifactId>dans-dropwizard-project</artifactId>
         <groupId>nl.knaw.dans.shared</groupId>
-        <version>7.2.0</version>
+        <version>7.4.0</version>
     </parent>
 
     <groupId>nl.knaw.dans</groupId>
     <artifactId>easy-mirror-deposit</artifactId>
     <version>1.0.2-SNAPSHOT</version>
 
-    <name>Easy Mirror Deposit</name>
+    <name>EASY Mirror Deposit</name>
     <url>https://github.com/DANS-KNAW/easy-mirror-deposit</url>
     <description>Mirrors Data Station datasets in EASY</description>
     <inceptionYear>2022</inceptionYear>
@@ -47,12 +47,10 @@
         <dependency>
             <groupId>nl.knaw.dans</groupId>
             <artifactId>dans-java-utils</artifactId>
-            <version>0.0.8</version>
         </dependency>
         <dependency>
             <groupId>nl.knaw.dans</groupId>
             <artifactId>dans-dataverse-client-lib</artifactId>
-            <version>0.0.16</version>
         </dependency>
         <dependency>
             <groupId>commons-configuration</groupId>
@@ -81,12 +79,10 @@
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>
-            <version>2.3</version>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>2.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

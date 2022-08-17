@@ -17,13 +17,11 @@
 package nl.knaw.dans.easy.mirror;
 
 import io.dropwizard.Application;
-import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import nl.knaw.dans.easy.mirror.core.FileServiceImpl;
 import nl.knaw.dans.easy.mirror.core.MirroringService;
 import nl.knaw.dans.easy.mirror.core.TransferItemMetadataReaderImpl;
 import nl.knaw.dans.easy.mirror.health.InboxHealth;
-import org.apache.velocity.app.Velocity;
 
 import java.util.concurrent.ExecutorService;
 
@@ -36,11 +34,6 @@ public class EasyMirrorDepositApplication extends Application<EasyMirrorDepositC
     @Override
     public String getName() {
         return "Easy Mirror Deposit";
-    }
-
-    @Override
-    public void initialize(final Bootstrap<EasyMirrorDepositConfiguration> bootstrap) {
-        // TODO: application initialization
     }
 
     @Override

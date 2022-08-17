@@ -16,14 +16,11 @@
 
 package nl.knaw.dans.easy.mirror;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import nl.knaw.dans.lib.util.ExecutorServiceFactory;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.nio.file.Path;
 
 public class EasyMirrorDepositConfiguration extends Configuration {
 
@@ -50,6 +47,5 @@ public class EasyMirrorDepositConfiguration extends Configuration {
     public void setMirroringService(MirroringServiceFactory mirroringService) {
         this.mirroringService = mirroringService;
     }
-
 
 }
