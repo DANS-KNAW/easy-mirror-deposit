@@ -22,7 +22,7 @@
     <parent>
         <artifactId>dans-dropwizard-project</artifactId>
         <groupId>nl.knaw.dans.shared</groupId>
-        <version>7.4.0</version>
+        <version>9.1.0-SNAPSHOT</version>
     </parent>
 
     <groupId>nl.knaw.dans</groupId>
@@ -44,6 +44,10 @@
     </scm>
 
     <dependencies>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>nl.knaw.dans</groupId>
             <artifactId>dans-java-utils</artifactId>
@@ -90,6 +94,19 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+           </plugin>
+        </plugins>
+    </build>
 
     <repositories>
         <repository>
