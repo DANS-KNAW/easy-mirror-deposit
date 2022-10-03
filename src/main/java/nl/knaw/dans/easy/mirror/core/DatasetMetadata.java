@@ -69,7 +69,7 @@ public class DatasetMetadata {
                 Collectors.toList());
         audiences.addAll(simpleStringUris);
         accessRights = "NO_ACCESS"; // No access through EASY
-        rightsHolders = readMultiValueString(context, "$['ore:describes']['dansRights:Rights Holder']");
+        rightsHolders = readMultiValue(context, "$['ore:describes']['dansRights:Rights Holder']", "$['ore:describes']['dansRights:Rights Holder']");
     }
 
     private static String readSingleValue(DocumentContext context, String path) {
@@ -82,6 +82,11 @@ public class DatasetMetadata {
         }
         catch (PathNotFoundException e) {
             return context.read(pathMulti);
+        }
+        catch (ClassCastException e) {
+            if (e.getMessage().contains("JSONArray cannot be cast"))
+                return context.read(pathMulti);
+            else throw e;
         }
     }
 
