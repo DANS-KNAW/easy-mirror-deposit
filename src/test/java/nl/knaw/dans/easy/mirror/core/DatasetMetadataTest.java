@@ -37,7 +37,7 @@ public class DatasetMetadataTest {
         Assertions.assertEquals(Collections.singletonList("D14430"), md.getAudiences());
         Assertions.assertEquals("2022-04-02", md.getAvailable());
         Assertions.assertEquals("NO_ACCESS", md.getAccessRights());
-        Assertions.assertEquals(Collections.singletonList("DANS"), md.getRightsHolders());
+        Assertions.assertEquals(Collections.singletonList("DANS &amp; BAILE"), md.getRightsHolders());
     }
 
     @Test
@@ -54,16 +54,18 @@ public class DatasetMetadataTest {
     }
 
     @Test
-    public void should_handle_audience_as_string() throws Exception {
+    public void should_handle_audience_and_rightsholder_as_string() throws Exception {
         String jsonLd = FileUtils.readFileToString(Paths.get("src/test/resources/jsonld/example-audience-as-string-single.json").toFile(), "UTF-8");
         DatasetMetadata md = new DatasetMetadata(jsonLd);
         Assertions.assertEquals(Collections.singletonList("D30100"), md.getAudiences());
+        Assertions.assertEquals(Collections.singletonList("DANS"), md.getRightsHolders());
     }
 
     @Test
-    public void should_handle_audiences_as_strings_multi() throws Exception {
+    public void should_handle_audiences_and_rightsholders_as_strings_multi() throws Exception {
         String jsonLd = FileUtils.readFileToString(Paths.get("src/test/resources/jsonld/example-audience-as-string-multi.json").toFile(), "UTF-8");
         DatasetMetadata md = new DatasetMetadata(jsonLd);
         Assertions.assertEquals(Arrays.asList("D30100", "D16700", "D38000"), md.getAudiences());
+        Assertions.assertEquals(Arrays.asList("DANS", "BAILE"), md.getRightsHolders());
     }
 }
