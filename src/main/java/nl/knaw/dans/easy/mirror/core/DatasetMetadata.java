@@ -46,8 +46,8 @@ public class DatasetMetadata {
 
     public DatasetMetadata(String jsonLdString) {
         DocumentContext context = JsonPath.parse(jsonLdString);
-        nbn = readSingleValue(context,"$['ore:describes']['dansDataVaultMetadata:NBN']");
-        title = readSingleValue(context,"$['ore:describes']['Title']");
+        nbn = readSingleValue(context, "$['ore:describes']['dansDataVaultMetadata:NBN']");
+        title = readSingleValue(context, "$['ore:describes']['Title']");
         description = StringUtils.join(readMultiValue(context,
             "$['ore:describes']['citation:Description']['dsDescription:Text']",
             "$['ore:describes']['citation:Description'][*]['dsDescription:Text']"), "\n\n");
@@ -55,8 +55,8 @@ public class DatasetMetadata {
             "$['ore:describes']['Author']['author:Name']",
             "$['ore:describes']['Author'][*]['author:Name']");
 
-        modified = readSingleValue(context,"$['ore:describes']['schema:dateModified']");
-        published = readSingleValue(context,"$['ore:describes']['schema:datePublished']");
+        modified = readSingleValue(context, "$['ore:describes']['schema:dateModified']");
+        published = readSingleValue(context, "$['ore:describes']['schema:datePublished']");
         created = readStringWithDefaultValue(context, "$['ore:describes']['citation:Date Produced']", published);
         available = published;
         audiences = readMultiValue(context, "$['ore:describes']['dansRelationMetadata:Audience']['@id']",
@@ -69,7 +69,7 @@ public class DatasetMetadata {
                 Collectors.toList());
         audiences.addAll(simpleStringUris);
         accessRights = "NO_ACCESS"; // No access through EASY
-        rightsHolders = readMultiValueString(context, "$['ore:describes']['dansRights:Rights Holder']");
+        rightsHolders = readMultiValue(context, "$['ore:describes']['dansRights:Rights Holder']", "$['ore:describes']['dansRights:Rights Holder']");
     }
 
     private static String readSingleValue(DocumentContext context, String path) {
@@ -77,12 +77,31 @@ public class DatasetMetadata {
     }
 
     private static List<String> readMultiValue(DocumentContext context, String pathSingle, String pathMulti) {
+        List<String> results;
+
         try {
-            return Collections.singletonList(StringEscapeUtils.escapeXml(context.read(pathSingle)));
+            results = Collections.singletonList(StringEscapeUtils.escapeXml(context.read(pathSingle)));
         }
         catch (PathNotFoundException e) {
-            return context.read(pathMulti);
+            List<String> rawResults = context.read(pathMulti);
+            results = new LinkedList<>();
+            for (String r : rawResults) {
+                results.add(StringEscapeUtils.escapeXml(r));
+            }
         }
+        catch (ClassCastException e) {
+            if (e.getMessage().contains("JSONArray cannot be cast")) {
+                List<String> rawResults = context.read(pathMulti);
+                results = new LinkedList<>();
+                for (String r : rawResults) {
+                    results.add(StringEscapeUtils.escapeXml(r));
+                }
+
+            }
+            else
+                throw e;
+        }
+        return results;
     }
 
     private static List<String> readOnlyStringElements(DocumentContext context, String path) {
@@ -90,7 +109,7 @@ public class DatasetMetadata {
         if (value instanceof String) {
             return Collections.singletonList((String) value);
         }
-        else if (!(value instanceof LinkedHashMap)){
+        else if (!(value instanceof LinkedHashMap)) {
             LinkedList<String> results = new LinkedList<>();
             Iterable<Object> objects = (Iterable<Object>) value;
             for (Object o : objects) {
@@ -100,16 +119,6 @@ public class DatasetMetadata {
             return results;
         }
         return Collections.emptyList();
-    }
-
-    private static List<String> readMultiValueString(DocumentContext context, String path) {
-        Object value = context.read(path);
-        if (value instanceof String) {
-            return Collections.singletonList((String) value);
-        }
-        else {
-            return (List<String>) value;
-        }
     }
 
     private static String readStringWithDefaultValue(DocumentContext context, String path, String defaultValue) {

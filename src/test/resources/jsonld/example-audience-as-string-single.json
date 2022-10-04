@@ -45,10 +45,7 @@
     ],
     "dansDataVaultMetadata:NBN": "urn:nbn:nl:ui:13-4679f2cd-6f7d-41a7-8fbd-34078b920959",
     "dansDataVaultMetadata:DV PID": "doi:10.5072/DAR/TIEGBR",
-    "dansRights:Rights Holder": [
-      "DANS",
-      "BAILE"
-    ],
+    "dansRights:Rights Holder": "DANS",
     "@id": "doi:10.5072/DAR/TIEGBR",
     "@type": [
       "ore:Aggregation",

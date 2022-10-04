@@ -17,7 +17,6 @@ package nl.knaw.dans.easy.mirror.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.knaw.dans.lib.dataverse.model.ExportedDatasetVersionName;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
