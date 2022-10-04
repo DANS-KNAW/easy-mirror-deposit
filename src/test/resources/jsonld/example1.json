@@ -4,51 +4,30 @@
   "@type": "ore:ResourceMap",
   "@id": "https://dar.dans.knaw.nl/api/datasets/export?exporter=OAI_ORE&persistentId=doi:10.5072/DAR/DMGVDH",
   "ore:describes": {
-    "citation:Description": {
-      "dsDescription:Text": "Test"
+    "citation:dsDescription": {
+      "dsDescription:dsDescriptionValue": "Test"
     },
-    "Author": {
-      "author:Name": "Admin, Dataverse",
-      "author:Affiliation": "Dataverse.org"
+    "author": {
+      "citation:authorName": "Admin, Dataverse",
+      "citation:authorAffiliation": "Dataverse.org"
     },
-    "citation:Contact": {
-      "datasetContact:Name": "Admin, Dataverse",
-      "datasetContact:Affiliation": "Dataverse.org",
-      "datasetContact:E-mail": "dataverse@mailinator.com"
+    "citation:datasetContact": {
+      "citation:datasetContactName": "Admin, Dataverse",
+      "citation:datasetContactAffiliation": "Dataverse.org",
+      "citation:datasetContactEmail": "dataverse@mailinator.com"
     },
-    "Subject": "Astronomy and Astrophysics",
-    "citation:Depositor": "Admin, Dataverse",
-    "dansRights:Rights Holder": "DANS & BAILE",
-    "Title": "Test export & special chars",
-    "Deposit Date": "2022-04-02",
-    "dansRelationMetadata:Audience": {
-      "@id": "https://www.narcis.nl/classification/D14430",
-      "termName": [
-        {
-          "lang": "en",
-          "value": "Hydraulic engineering"
-        },
-        {
-          "lang": "nl",
-          "value": "Waterbouwkunde"
-        },
-        {
-          "lang": "en",
-          "value": "Offshore technology"
-        },
-        {
-          "lang": "nl",
-          "value": "Offshore technologie"
-        }
-      ],
-      "vocabularyUri": "https://www.narcis.nl/classification/"
-    },
-    "dansRights:Personal Data In Dataset?": "No",
-    "dansDataVaultMetadata:NBN": "urn:nbn:nl:ui:13-10d2fb06-67aa-4964-b86f-9cd59e52fa60",
-    "dansDataVaultMetadata:Bag ID": "urn:uuid:a452c9b8-471b-4f61-8ef2-27299346e159",
-    "dansDataVaultMetadata:DV PID": "doi:10.5072/DAR/DMGVDH",
-    "dansDataVaultMetadata:DV PID Version": "1.0",
-    "citation:Notes": "A copy of this dataset is stored in EASY, the DANS CTS certified repository, at http://www.persistent-identifier.nl?identifier=urn:nbn:nl:ui:13-10d2fb06-67aa-4964-b86f-9cd59e52fa60. (Note that this link will become resolvable only after the mirroring process has finished, which will take up to several days after first publication of the dataset.)",
+    "subject": "Astronomy and Astrophysics",
+    "citation:depositor": "Admin, Dataverse",
+    "dansRights:dansRightsHolder": "DANS & BAILE",
+    "title": "Test export & special chars",
+    "dateOfDeposit": "2022-04-02",
+    "dansRelationMetadata:dansAudience": "https://www.narcis.nl/classification/D14430",
+    "dansRights:dansPersonalDataPresent": "No",
+    "dansDataVaultMetadata:dansNbn": "urn:nbn:nl:ui:13-10d2fb06-67aa-4964-b86f-9cd59e52fa60",
+    "dansDataVaultMetadata:dansBagId": "urn:uuid:a452c9b8-471b-4f61-8ef2-27299346e159",
+    "dansDataVaultMetadata:dansDataversePid": "doi:10.5072/DAR/DMGVDH",
+    "dansDataVaultMetadata:dansDataversePidVersion": "1.0",
+    "citation:notesText": "A copy of this dataset is stored in EASY, the DANS CTS certified repository, at http://www.persistent-identifier.nl?identifier=urn:nbn:nl:ui:13-10d2fb06-67aa-4964-b86f-9cd59e52fa60. (Note that this link will become resolvable only after the mirroring process has finished, which will take up to several days after first publication of the dataset.)",
     "@id": "doi:10.5072/DAR/DMGVDH",
     "@type": [
       "ore:Aggregation",
@@ -123,23 +102,23 @@
     ]
   },
   "@context": {
-    "Author": "http://purl.org/dc/terms/creator",
-    "Deposit Date": "http://purl.org/dc/terms/dateSubmitted",
-    "Subject": "http://purl.org/dc/terms/subject",
-    "Title": "http://purl.org/dc/terms/title",
-    "author": "https://dataverse.org/schema/citation/author#",
+    "alternativeTitle": "http://purl.org/dc/terms/alternative",
+    "author": "http://purl.org/dc/terms/creator",
+    "authorIdentifier": "http://purl.org/spar/datacite/AgentIdentifier",
+    "authorIdentifierScheme": "http://purl.org/spar/datacite/AgentIdentifierScheme",
     "citation": "https://dataverse.org/schema/citation/",
     "dansDataVaultMetadata": "https://dar.dans.knaw.nl/schema/dansDataVaultMetadata#",
     "dansRelationMetadata": "https://dar.dans.knaw.nl/schema/dansRelationMetadata#",
     "dansRights": "https://dar.dans.knaw.nl/schema/dansRights#",
-    "datasetContact": "https://dataverse.org/schema/citation/datasetContact#",
+    "dateOfDeposit": "http://purl.org/dc/terms/dateSubmitted",
     "dcterms": "http://purl.org/dc/terms/",
-    "dsDescription": "https://dataverse.org/schema/citation/dsDescription#",
     "dvcore": "https://dataverse.org/schema/core#",
     "lang": "@language",
     "ore": "http://www.openarchives.org/ore/terms/",
     "schema": "http://schema.org/",
+    "subject": "http://purl.org/dc/terms/subject",
     "termName": "https://schema.org/name",
+    "title": "http://purl.org/dc/terms/title",
     "value": "@value",
     "vocabularyName": "https://dataverse.org/schema/vocabularyName",
     "vocabularyUri": "https://dataverse.org/schema/vocabularyUri"
