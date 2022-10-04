@@ -4,38 +4,38 @@
   "@type": "ore:ResourceMap",
   "@id": "https://dar.dans.knaw.nl/api/datasets/export?exporter=OAI_ORE&persistentId=doi:10.5072/DAR/TIEGBR",
   "ore:describes": {
-    "Author": [
+    "author": [
       {
-        "author:Name": "Admin, Dataverse",
-        "author:Affiliation": "Dataverse.org"
+        "citation:authorName": "Admin, Dataverse",
+        "citation:authorAffiliation": "Dataverse.org"
       },
       {
-        "author:Name": "Author 2",
-        "author:Affiliation": "DANS",
-        "Identifier Scheme": "ORCID",
-        "Identifier": "123"
+        "citation:authorName": "Author 2",
+        "citation:authorAffiliation": "DANS",
+        "authorIdentifierScheme": "ORCID",
+        "authorIdentifier": "123"
       }
     ],
-    "citation:Description": [
+    "citation:dsDescription": [
       {
-        "dsDescription:Text": "Descr 1",
-        "dsDescription:Date": "2022-04-01"
+        "citation:dsDescriptionValue": "Descr 1",
+        "citation:dsDescriptionDate": "2022-04-01"
       },
       {
-        "dsDescription:Text": "Descr 2",
-        "dsDescription:Date": "2022-04-02"
+        "citation:dsDescriptionValue": "Descr 2",
+        "citation:dsDescriptionDate": "2022-04-02"
       }
     ],
-    "citation:Contact": {
-      "datasetContact:Name": "Admin, Dataverse",
-      "datasetContact:Affiliation": "Dataverse.org",
-      "datasetContact:E-mail": "dataverse@mailinator.com"
+    "citation:datasetContact": {
+      "citation:datasetContactName": "Admin, Dataverse",
+      "citation:datasetContactAffiliation": "Dataverse.org",
+      "citation:datasetContactEmail": "dataverse@mailinator.com"
     },
-    "Title": "Test multi-value",
-    "dansRights:Personal Data In Dataset?": "No",
-    "dansDataVaultMetadata:DV PID Version": "1.0",
-    "dansDataVaultMetadata:Bag ID": "urn:uuid:0bfb79ba-6eab-4153-8a9b-a41cdf6fd8d7",
-    "dansRelationMetadata:Audience": [
+    "title": "Test multi-value",
+    "dansRights:dansPersonalDataPresent": "No",
+    "dansDataVaultMetadata:dansDataversePidVersion": "1.0",
+    "dansDataVaultMetadata:dansBagId": "urn:uuid:0bfb79ba-6eab-4153-8a9b-a41cdf6fd8d7",
+    "dansRelationMetadata:dansAudience": [
       {
         "@id": "https://www.narcis.nl/classification/D30100",
         "termName": [
@@ -79,16 +79,16 @@
         "vocabularyUri": "https://www.narcis.nl/classification/"
       }
     ],
-    "Deposit Date": "2022-04-13",
-    "citation:Depositor": "Admin, Dataverse",
-    "Subject": [
+    "dateOfDeposit": "2022-04-13",
+    "citation:depositor": "Admin, Dataverse",
+    "subject": [
       "Agricultural Sciences",
       "Arts and Humanities",
       "Astronomy and Astrophysics"
     ],
-    "dansDataVaultMetadata:NBN": "urn:nbn:nl:ui:13-4679f2cd-6f7d-41a7-8fbd-34078b920959",
-    "dansDataVaultMetadata:DV PID": "doi:10.5072/DAR/TIEGBR",
-    "dansRights:Rights Holder": [
+    "dansDataVaultMetadata:dansNbn": "urn:nbn:nl:ui:13-4679f2cd-6f7d-41a7-8fbd-34078b920959",
+    "dansDataVaultMetadata:dansDataversePid": "doi:10.5072/DAR/TIEGBR",
+    "dansRights:dansRightsHolder": [
       "DANS",
       "BAILE"
     ],
@@ -110,25 +110,23 @@
     "schema:hasPart": []
   },
   "@context": {
-    "Author": "http://purl.org/dc/terms/creator",
-    "Deposit Date": "http://purl.org/dc/terms/dateSubmitted",
-    "Identifier": "http://purl.org/spar/datacite/AgentIdentifier",
-    "Identifier Scheme": "http://purl.org/spar/datacite/AgentIdentifierScheme",
-    "Subject": "http://purl.org/dc/terms/subject",
-    "Title": "http://purl.org/dc/terms/title",
-    "author": "https://dataverse.org/schema/citation/author#",
+    "alternativeTitle": "http://purl.org/dc/terms/alternative",
+    "author": "http://purl.org/dc/terms/creator",
+    "authorIdentifier": "http://purl.org/spar/datacite/AgentIdentifier",
+    "authorIdentifierScheme": "http://purl.org/spar/datacite/AgentIdentifierScheme",
     "citation": "https://dataverse.org/schema/citation/",
     "dansDataVaultMetadata": "https://dar.dans.knaw.nl/schema/dansDataVaultMetadata#",
     "dansRelationMetadata": "https://dar.dans.knaw.nl/schema/dansRelationMetadata#",
     "dansRights": "https://dar.dans.knaw.nl/schema/dansRights#",
-    "datasetContact": "https://dataverse.org/schema/citation/datasetContact#",
+    "dateOfDeposit": "http://purl.org/dc/terms/dateSubmitted",
     "dcterms": "http://purl.org/dc/terms/",
-    "dsDescription": "https://dataverse.org/schema/citation/dsDescription#",
     "dvcore": "https://dataverse.org/schema/core#",
     "lang": "@language",
     "ore": "http://www.openarchives.org/ore/terms/",
     "schema": "http://schema.org/",
+    "subject": "http://purl.org/dc/terms/subject",
     "termName": "https://schema.org/name",
+    "title": "http://purl.org/dc/terms/title",
     "value": "@value",
     "vocabularyName": "https://dataverse.org/schema/vocabularyName",
     "vocabularyUri": "https://dataverse.org/schema/vocabularyUri"

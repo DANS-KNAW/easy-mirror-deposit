@@ -38,15 +38,15 @@ public class MirrorStoreTest {
 
     @Test
     public void stores_bag_in_path_derived_from_first_four_chars_in_suffix() throws Exception {
-        mirrorStore.store(testDir.resolve("valid/doi-10-5072-dar-dmgvdhv1.0.zip"));
-        Assertions.assertTrue(Files.exists(storeDir.resolve("dm/gv/doi-10-5072-dar-dmgvdhv1.0.zip")));
+        mirrorStore.store(testDir.resolve("valid/doi-10-5072-fk2-xcfq1bv1.0.zip"));
+        Assertions.assertTrue(Files.exists(storeDir.resolve("xc/fq/doi-10-5072-fk2-xcfq1bv1.0.zip")));
     }
 
     @Test
     public void returns_exists_true_if_bag_already_stored() throws Exception {
-        Path container = Files.createDirectories(storeDir.resolve("dm/gv"));
-        Files.copy(testDir.resolve("valid/doi-10-5072-dar-dmgvdhv1.0.zip"), container.resolve("doi-10-5072-dar-dmgvdhv1.0.zip"));
-        Assertions.assertTrue(mirrorStore.contains(testDir.resolve("valid/doi-10-5072-dar-dmgvdhv1.0.zip")));
+        Path container = Files.createDirectories(storeDir.resolve("xc/fq"));
+        Files.copy(testDir.resolve("valid/doi-10-5072-fk2-xcfq1bv1.0.zip"), container.resolve("doi-10-5072-fk2-xcfq1bv1.0.zip"));
+        Assertions.assertTrue(mirrorStore.contains(testDir.resolve("valid/doi-10-5072-fk2-xcfq1bv1.0.zip")));
     }
 
 

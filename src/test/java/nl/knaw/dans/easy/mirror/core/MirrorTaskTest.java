@@ -79,7 +79,7 @@ public class MirrorTaskTest {
 
     @Test
     public void dve_V1_1_goes_only_to_mirror_store() throws Exception {
-        Path dve = Paths.get("valid/doi-10-5072-dar-lwvagyv1.1.zip");
+        Path dve = Paths.get("valid/doi-10-5072-fk2-xcfq1bv1.1.zip");
         createTask(dve).run();
         assertEquals(0, Files.list(depositOutbox).count());
         assertTrue(mirrorStore.contains(dve));
@@ -87,7 +87,7 @@ public class MirrorTaskTest {
 
     @Test
     public void dve_V1_goes_to_mirror_store_and_produces_deposit() throws Exception {
-        Path dve = Paths.get("valid/doi-10-5072-dar-dmgvdhv1.0.zip");
+        Path dve = Paths.get("valid/doi-10-5072-fk2-xcfq1bv1.0.zip");
         createTask(dve).run();
         assertEquals(1, Files.list(depositOutbox).count());
         Path depositDir = Files.list(depositOutbox).collect(Collectors.toList()).get(0);

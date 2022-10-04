@@ -49,8 +49,8 @@ public class DatasetMetadata {
         nbn = readSingleValue(context, "$['ore:describes']['dansDataVaultMetadata:dansNbn']");
         title = readSingleValue(context, "$['ore:describes']['title']");
         description = StringUtils.join(readMultiValue(context,
-            "$['ore:describes']['citation:dsDescription']['dsDescription:dsDescriptionValue']",
-            "$['ore:describes']['citation:dsDescription'][*]['dsDescription:dsDescriptionValue']"), "\n\n");
+            "$['ore:describes']['citation:dsDescription']['citation:dsDescriptionValue']",
+            "$['ore:describes']['citation:dsDescription'][*]['citation:dsDescriptionValue']"), "\n\n");
         creators = readMultiValue(context,
             "$['ore:describes']['author']['citation:authorName']",
             "$['ore:describes']['author'][*]['citation:authorName']");

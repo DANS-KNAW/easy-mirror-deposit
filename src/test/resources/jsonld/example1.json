@@ -5,7 +5,7 @@
   "@id": "https://dar.dans.knaw.nl/api/datasets/export?exporter=OAI_ORE&persistentId=doi:10.5072/DAR/DMGVDH",
   "ore:describes": {
     "citation:dsDescription": {
-      "dsDescription:dsDescriptionValue": "Test"
+      "citation:dsDescriptionValue": "Test"
     },
     "author": {
       "citation:authorName": "Admin, Dataverse",
