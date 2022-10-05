@@ -95,13 +95,13 @@ public class TransferItemMetadataReaderImpl implements TransferItemMetadataReade
             JsonNode jsonNode = Objects.requireNonNull(objectMapper.readTree(oaiOre), "jsonld metadata can't be null: " + path);
             JsonNode describesNode = Objects.requireNonNull(jsonNode.get("ore:describes"), "ore:describes node can't be null");
 
-            String nbn = getStringFromNode(describesNode, "dansDataVaultMetadata:NBN");
-            String dvPidVersion = getStringFromNode(describesNode, "dansDataVaultMetadata:DV PID Version");
-            String bagId = getStringFromNode(describesNode, "dansDataVaultMetadata:Bag ID");
-            String otherId = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:Other ID");
-            String otherIdVersion = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:Other ID Version");
-            String swordClient = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:SWORD Client");
-            String swordToken = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:SWORD Token");
+            String nbn = getStringFromNode(describesNode, "dansDataVaultMetadata:dansNbn");
+            String dvPidVersion = getStringFromNode(describesNode, "dansDataVaultMetadata:dansDataversePidVersion");
+            String bagId = getStringFromNode(describesNode, "dansDataVaultMetadata:dansBagId");
+            String otherId = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:dansOtherId");
+            String otherIdVersion = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:dansOtherIdVersion");
+            String swordClient = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:dansSwordClient");
+            String swordToken = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:dansSwordToken");
 
             result.setBagChecksum(fileService.calculateChecksum(path));
             result.setPidMapping(pidMapping);

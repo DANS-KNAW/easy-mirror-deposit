@@ -46,30 +46,30 @@ public class DatasetMetadata {
 
     public DatasetMetadata(String jsonLdString) {
         DocumentContext context = JsonPath.parse(jsonLdString);
-        nbn = readSingleValue(context, "$['ore:describes']['dansDataVaultMetadata:NBN']");
-        title = readSingleValue(context, "$['ore:describes']['Title']");
+        nbn = readSingleValue(context, "$['ore:describes']['dansDataVaultMetadata:dansNbn']");
+        title = readSingleValue(context, "$['ore:describes']['title']");
         description = StringUtils.join(readMultiValue(context,
-            "$['ore:describes']['citation:Description']['dsDescription:Text']",
-            "$['ore:describes']['citation:Description'][*]['dsDescription:Text']"), "\n\n");
+            "$['ore:describes']['citation:dsDescription']['citation:dsDescriptionValue']",
+            "$['ore:describes']['citation:dsDescription'][*]['citation:dsDescriptionValue']"), "\n\n");
         creators = readMultiValue(context,
-            "$['ore:describes']['Author']['author:Name']",
-            "$['ore:describes']['Author'][*]['author:Name']");
+            "$['ore:describes']['author']['citation:authorName']",
+            "$['ore:describes']['author'][*]['citation:authorName']");
 
         modified = readSingleValue(context, "$['ore:describes']['schema:dateModified']");
         published = readSingleValue(context, "$['ore:describes']['schema:datePublished']");
-        created = readStringWithDefaultValue(context, "$['ore:describes']['citation:Date Produced']", published);
+        created = readStringWithDefaultValue(context, "$['ore:describes']['citation:productionDate']", published);
         available = published;
-        audiences = readMultiValue(context, "$['ore:describes']['dansRelationMetadata:Audience']['@id']",
-            "$['ore:describes']['dansRelationMetadata:Audience'][*]['@id']").stream().map(DatasetMetadata::extractNarcisIdFromUri).collect(
+        audiences = readMultiValue(context, "$['ore:describes']['dansRelationMetadata:dansAudience']['@id']",
+            "$['ore:describes']['dansRelationMetadata:dansAudience'][*]['@id']").stream().map(DatasetMetadata::extractNarcisIdFromUri).collect(
             Collectors.toList());
         // If no audiences were found, it could be that there are none, but it could also be that they are not stored as objects with an @id field, but rather as simple
         // Strings containing the term URIs. Maybe this happens when Dataverse is unable to download metadata from Skosmos?
-        List<String> simpleStringUris = readOnlyStringElements(context, "$['ore:describes']['dansRelationMetadata:Audience']").stream()
+        List<String> simpleStringUris = readOnlyStringElements(context, "$['ore:describes']['dansRelationMetadata:dansAudience']").stream()
             .map(DatasetMetadata::extractNarcisIdFromUri).collect(
                 Collectors.toList());
         audiences.addAll(simpleStringUris);
         accessRights = "NO_ACCESS"; // No access through EASY
-        rightsHolders = readMultiValue(context, "$['ore:describes']['dansRights:Rights Holder']", "$['ore:describes']['dansRights:Rights Holder']");
+        rightsHolders = readMultiValue(context, "$['ore:describes']['dansRights:dansRightsHolder']", "$['ore:describes']['dansRights:dansRightsHolder']");
     }
 
     private static String readSingleValue(DocumentContext context, String path) {
