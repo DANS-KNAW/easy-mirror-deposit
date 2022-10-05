@@ -35,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MirrorTaskTest {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-
     private final Path inbox = Paths.get("target/test/MirrorTaskTest/inbox");
     private final Path depositOutbox = Paths.get("target/test/MirrorTaskTest/depositOutbox");
     private final Path workDir = Paths.get("target/test/MirrorTaskTest/workingDirectory");
