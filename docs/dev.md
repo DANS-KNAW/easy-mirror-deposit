@@ -4,7 +4,7 @@ Development
 Known Issues
 ------------
 
-A warning is logged because `easy-mirror-deposit` runs in Java 8 (an EASY constraint) and thereofore cannot use 
+A warning is logged because `easy-mirror-deposit` runs in Java 8 (an EASY constraint) and thereofore cannot use
 certain Java 9+ methods. However, this is a warning only, and does not preclude the service from running correctly.
 It can therefore be safely ignored.
 
