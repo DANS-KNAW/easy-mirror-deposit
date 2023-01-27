@@ -90,7 +90,11 @@ public class DatasetMetadata {
             }
         }
         catch (ClassCastException e) {
-            if (e.getMessage().contains("JSONArray cannot be cast")) {
+            /*
+             * This is a bit messy, but OK for this temporary module. A ClassCastException may have slightly different messages across Java distributions.
+             * The second "contains()" below is there to catch the CCE from the adopt-openj9 distribution used in the GitHub Actions build.
+             */
+            if (e.getMessage().contains("JSONArray cannot be cast") || e.getMessage().contains("incompatible with java.lang.String")) {
                 List<String> rawResults = context.read(pathMulti);
                 results = new LinkedList<>();
                 for (String r : rawResults) {
