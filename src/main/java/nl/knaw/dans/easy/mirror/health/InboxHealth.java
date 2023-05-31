@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class InboxHealth extends HealthCheck {
     private final Path inboxDir;
@@ -31,8 +32,11 @@ public class InboxHealth extends HealthCheck {
 
     @Override
     protected Result check() throws Exception {
-        try {
-            Files.list(inboxDir).collect(Collectors.toList());
+        try (Stream<Path> inboxFiles = Files.list(inboxDir)) {
+            String inboxFileNames = inboxFiles.map(Path::getFileName).map(Path::toString).collect(Collectors.joining(", "));
+            if (inboxFileNames.isEmpty()) {
+                return Result.unhealthy("Inbox is empty");
+            }
         }
         catch (IOException e) {
             return Result.unhealthy("Could not read inbox", e);

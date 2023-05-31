@@ -17,6 +17,7 @@ package nl.knaw.dans.easy.mirror;
 
 import nl.knaw.dans.easy.mirror.core.MirroringService;
 import nl.knaw.dans.easy.mirror.core.TransferItemMetadataReader;
+import nl.knaw.dans.easy.mirror.core.config.Inbox;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -24,14 +25,14 @@ import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 public class MirroringServiceFactory {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @NotNull
     @Valid
-    private Path inbox;
+    private List<Inbox> inboxes;
 
     private int pollingInterval;
 
@@ -55,21 +56,17 @@ public class MirroringServiceFactory {
     @Valid
     private Path velocityProperties;
 
-    @NotNull
-    @Valid
-    private Date ignoreMigratedDatasetUpdatesPublishedBefore;
-
     public MirroringService build(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader) {
-        return new MirroringService(executorService, transferItemMetadataReader, velocityProperties, ignoreMigratedDatasetUpdatesPublishedBefore, pollingInterval, inbox, workDir,
+        return new MirroringService(executorService, transferItemMetadataReader, velocityProperties, pollingInterval, inboxes, workDir,
             depositOutbox, failedBox, easyMirrorStore);
     }
 
-    public Path getInbox() {
-        return inbox;
+    public List<Inbox> getInboxes() {
+        return inboxes;
     }
 
-    public void setInbox(Path inbox) {
-        this.inbox = inbox;
+    public void setInboxes(List<Inbox> inboxes) {
+        this.inboxes = inboxes;
     }
 
     public int getPollingInterval() {
@@ -120,16 +117,4 @@ public class MirroringServiceFactory {
         this.velocityProperties = velocityProperties;
     }
 
-    public Date getIgnoreMigratedDatasetUpdatesPublishedBefore() {
-        return ignoreMigratedDatasetUpdatesPublishedBefore;
-    }
-
-    public void setIgnoreMigratedDatasetUpdatesPublishedBefore(String date) {
-        try {
-            this.ignoreMigratedDatasetUpdatesPublishedBefore = dateFormat.parse(date);
-        }
-        catch (ParseException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
 }
