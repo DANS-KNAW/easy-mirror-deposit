@@ -44,7 +44,7 @@ public class EasyMirrorDepositApplication extends Application<EasyMirrorDepositC
             .build(taskExecutor, new TransferItemMetadataReaderImpl(environment.getObjectMapper(), new FileServiceImpl()));
         environment.lifecycle().manage(mirroringService);
         for (Inbox inbox : configuration.getMirroringService().getInboxes()) {
-            environment.healthChecks().register("Inbox", new InboxHealth(inbox.getPath()));
+            environment.healthChecks().register(String.format("Inbox-%s", inbox.getPath().toString()), new InboxHealth(inbox.getPath()));
         }
 
     }
