@@ -19,17 +19,24 @@ taskQueue:
   keepAliveTime: 60 seconds
 
 mirroringService:
-  inbox: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/archaeology'
+  inboxes:
+    - path: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/archaeology'
+      #
+      # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
+      #
+      ignoreMigratedDatasetUpdatesPublishedBefore: '2022-06-22'
+    - path: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/ssh'
+      #
+      # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
+      #
+      ignoreMigratedDatasetUpdatesPublishedBefore: '2023-06-01'
+
   pollingInterval: 1000
   workDir: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-working-directory'
   depositOutbox: '/var/opt/dans.knaw.nl/tmp/easy-ingest-flow-inbox'
   failedBox: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-failed'
   easyMirrorStore: '/data/easy-mirror-store'
   velocityProperties: '/etc/opt/dans.knaw.nl/easy-mirror-deposit/velocity.properties'
-  #
-  # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
-  #
-  ignoreMigratedDatasetUpdatesPublishedBefore: '2022-06-22'
 
 #
 # See https://www.dropwizard.io/en/latest/manual/configuration.html#logging

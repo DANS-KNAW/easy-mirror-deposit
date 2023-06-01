@@ -16,6 +16,7 @@
 package nl.knaw.dans.easy.mirror.core;
 
 import io.dropwizard.lifecycle.Managed;
+import nl.knaw.dans.easy.mirror.core.config.Inbox;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
@@ -28,32 +29,38 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Stream;
 
 public class MirroringService implements Managed {
     private static final Logger log = LoggerFactory.getLogger(MirroringService.class);
     private final ExecutorService executorService;
     private final TransferItemMetadataReader transferItemMetadataReader;
     private final int pollingInterval;
-    private final Path inbox;
+    private final List<Inbox> inboxes;
     private final Path depositOutbox;
     private final Path failedBox;
     private final Path workDirectory;
     private final MirrorStore mirrorStore;
     private final Path velocityProperties;
-    private final Date ignoreMigratedDatasetUpdatesPublishedBefore;
-
     private boolean initialized = false;
     private boolean tasksCreatedInitialization = false;
 
     private class EventHandler extends FileAlterationListenerAdaptor {
+        private Inbox inbox;
+
+        public EventHandler(Inbox inbox) {
+            this.inbox = inbox;
+        }
+
         @Override
         public void onStart(FileAlterationObserver observer) {
             log.trace("onStart called");
             if (!initialized) {
                 initialized = true;
-                processAllFromInbox();
+                processAllFromInbox(inbox);
             }
         }
 
@@ -64,18 +71,18 @@ public class MirroringService implements Managed {
                 tasksCreatedInitialization = false;
                 return; // file already added to queue by onStart
             }
-            scheduleDatasetVersionExport(file.toPath());
+            scheduleDatasetVersionExport(file.toPath(), inbox);
         }
     }
 
-    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, Path velocityProperties, Date ignoreMigratedDatasetUpdatesPublishedBefore, int pollingInterval, Path inbox, Path workDirectory,
+    public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, Path velocityProperties, int pollingInterval, List<Inbox> inboxes,
+        Path workDirectory,
         Path depositOutbox, Path failedBox, Path mirrorStore) {
         this.executorService = executorService;
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.velocityProperties = velocityProperties;
-        this.ignoreMigratedDatasetUpdatesPublishedBefore = ignoreMigratedDatasetUpdatesPublishedBefore;
         this.pollingInterval = pollingInterval;
-        this.inbox = inbox;
+        this.inboxes = inboxes;
         this.workDirectory = workDirectory;
         this.depositOutbox = depositOutbox;
         this.failedBox = failedBox;
@@ -87,38 +94,45 @@ public class MirroringService implements Managed {
         log.info("Starting Mirroring Service");
         Velocity.init(velocityProperties.toString());
         log.debug("Initialized Velocity");
-        FileAlterationObserver observer = new FileAlterationObserver(inbox.toFile(), new DveFileFilter(inbox));
-        observer.addListener(new EventHandler());
-        log.debug("Added listener");
+
+        log.debug("Creating monitor");
         FileAlterationMonitor monitor = new FileAlterationMonitor(pollingInterval);
-        monitor.addObserver(observer);
-        log.debug("Added observer");
+        for (Inbox inbox : inboxes) {
+            log.info("Starting monitoring {}", inbox.getPath());
+            FileAlterationObserver observer = new FileAlterationObserver(inbox.getPath().toFile(), new DveFileFilter(inbox.getPath()));
+            observer.addListener(new EventHandler(inbox));
+            log.debug("Added listener for {}", inbox.getPath());
+            monitor.addObserver(observer);
+            log.debug("Added observer for {}", inbox.getPath());
+        }
+
         try {
             log.debug("Starting monitor");
             monitor.start();
             log.debug("Monitor started");
         }
         catch (Exception e) {
-            throw new IllegalStateException(String.format("Could not start monitoring %s", inbox), e);
+            throw new IllegalStateException("Could not start monitoring", e);
         }
     }
 
-    private void processAllFromInbox() {
+    private void processAllFromInbox(Inbox inbox) {
         try {
-            DveFileFilter fileFilter = new DveFileFilter(inbox);
-            Files.list(inbox)
-                .filter(f -> fileFilter.accept(f.toFile()))
-                .forEach(dve -> {
-                    scheduleDatasetVersionExport(dve);
-                    tasksCreatedInitialization = true;
-                });
+            DveFileFilter fileFilter = new DveFileFilter(inbox.getPath());
+            try (Stream<Path> files = Files.list(inbox.getPath())) {
+                files.filter(f -> fileFilter.accept(f.toFile()))
+                    .forEach(dve -> {
+                        scheduleDatasetVersionExport(dve, inbox);
+                        tasksCreatedInitialization = true;
+                    });
+            }
         }
         catch (IOException e) {
             throw new IllegalStateException("Could not read DVEs from inbox", e);
         }
     }
 
-    private void scheduleDatasetVersionExport(Path dve) {
+    private void scheduleDatasetVersionExport(Path dve, Inbox inbox) {
         log.info("Scheduling " + dve.getFileName());
         try {
             Path workingDve = Files.move(dve, workDirectory.resolve(dve.getFileName()));
@@ -126,10 +140,11 @@ public class MirroringService implements Managed {
             if (optXmlFile.isPresent()) {
                 log.debug("Removing associated XML file {}", optXmlFile.get());
                 Files.deleteIfExists(optXmlFile.get());
-            } else {
+            }
+            else {
                 log.warn("Associated XML file was not found");
             }
-            executorService.execute(new MirrorTask(transferItemMetadataReader, workingDve, ignoreMigratedDatasetUpdatesPublishedBefore, workDirectory, depositOutbox, failedBox, mirrorStore));
+            executorService.execute(new MirrorTask(transferItemMetadataReader, workingDve, inbox.getIgnoreMigratedDatasetUpdatesPublishedBefore(), workDirectory, depositOutbox, failedBox, mirrorStore));
         }
         catch (IOException e) {
             log.error("Could not move DVE to work directory", e);

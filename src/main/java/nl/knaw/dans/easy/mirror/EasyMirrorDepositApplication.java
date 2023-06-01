@@ -21,6 +21,7 @@ import io.dropwizard.setup.Environment;
 import nl.knaw.dans.easy.mirror.core.FileServiceImpl;
 import nl.knaw.dans.easy.mirror.core.MirroringService;
 import nl.knaw.dans.easy.mirror.core.TransferItemMetadataReaderImpl;
+import nl.knaw.dans.easy.mirror.core.config.Inbox;
 import nl.knaw.dans.easy.mirror.health.InboxHealth;
 
 import java.util.concurrent.ExecutorService;
@@ -42,7 +43,10 @@ public class EasyMirrorDepositApplication extends Application<EasyMirrorDepositC
         final MirroringService mirroringService = configuration.getMirroringService()
             .build(taskExecutor, new TransferItemMetadataReaderImpl(environment.getObjectMapper(), new FileServiceImpl()));
         environment.lifecycle().manage(mirroringService);
-        environment.healthChecks().register("Inbox", new InboxHealth(configuration.getMirroringService().getInbox()));
+        for (Inbox inbox : configuration.getMirroringService().getInboxes()) {
+            environment.healthChecks().register(String.format("Inbox-%s", inbox.getPath().toString()), new InboxHealth(inbox.getPath()));
+        }
+
     }
 
 }
