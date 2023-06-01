@@ -29,7 +29,7 @@ mirroringService:
       #
       # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
       #
-      ignoreMigratedDatasetUpdatesPublishedBefore: '2023-05-01'
+      ignoreMigratedDatasetUpdatesPublishedBefore: '2023-06-01'
 
   pollingInterval: 1000
   workDir: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-working-directory'
