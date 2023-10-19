@@ -46,6 +46,6 @@ Oct 05 10:56:15 deasy easy-mirror-deposit[11596]: ! at io.dropwizard.configurati
 Oct 05 10:56:15 deasy easy-mirror-deposit[11596]: ! at io.dropwizard.cli.ConfiguredCommand.parseConfiguration(ConfiguredCommand.java:137)
 Oct 05 10:56:15 deasy easy-mirror-deposit[11596]: ! at io.dropwizard.cli.ConfiguredCommand.run(ConfiguredCommand.java:85)
 Oct 05 10:56:15 deasy easy-mirror-deposit[11596]: ! at io.dropwizard.cli.Cli.run(Cli.java:78)
-Oct 05 10:56:15 deasy easy-mirror-deposit[11596]: ! at io.dropwizard.Application.run(Application.java:94)
+Oct 05 10:56:15 deasy easy-mirror-deposit[11596]: ! at io.dropwizard.core.Application.run(Application.java:94)
 
 ```
