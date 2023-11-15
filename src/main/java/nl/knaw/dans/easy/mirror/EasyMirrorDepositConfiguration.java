@@ -16,7 +16,7 @@
 
 package nl.knaw.dans.easy.mirror;
 
-import io.dropwizard.core.Configuration;
+import io.dropwizard.Configuration;
 import nl.knaw.dans.lib.util.ExecutorServiceFactory;
 
 import javax.validation.Valid;

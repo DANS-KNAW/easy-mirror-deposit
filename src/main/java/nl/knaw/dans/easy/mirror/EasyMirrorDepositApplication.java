@@ -16,8 +16,8 @@
 
 package nl.knaw.dans.easy.mirror;
 
-import io.dropwizard.core.Application;
-import io.dropwizard.core.setup.Environment;
+import io.dropwizard.Application;
+import io.dropwizard.setup.Environment;
 import nl.knaw.dans.easy.mirror.core.FileServiceImpl;
 import nl.knaw.dans.easy.mirror.core.MirroringService;
 import nl.knaw.dans.easy.mirror.core.TransferItemMetadataReaderImpl;
