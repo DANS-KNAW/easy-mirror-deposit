@@ -23,6 +23,8 @@
         <groupId>nl.knaw.dans</groupId>
         <artifactId>dd-parent</artifactId>
         <version>0.21.0</version>
+        <!-- DO NOT UPGRADE - easy-mirror-deposit needs to stay Java 8 compatible and higher versions of the parent will use DropWizard 3.x which is
+          compiled with Java 11 -->
     </parent>
 
     <artifactId>easy-mirror-deposit</artifactId>
