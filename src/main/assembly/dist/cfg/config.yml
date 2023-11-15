@@ -30,6 +30,16 @@ mirroringService:
       # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
       #
       ignoreMigratedDatasetUpdatesPublishedBefore: '2023-06-01'
+    - path: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/lifesciences'
+      #
+      # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
+      #
+      ignoreMigratedDatasetUpdatesPublishedBefore: '2023-12-05'
+    - path: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/phys-techsciences'
+      #
+      # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
+      #
+      ignoreMigratedDatasetUpdatesPublishedBefore: '2023-12-07'
 
   pollingInterval: 1000
   workDir: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-working-directory'
