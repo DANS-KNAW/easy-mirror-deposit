@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class MirroringService implements Managed {
@@ -45,6 +46,8 @@ public class MirroringService implements Managed {
     private final Path workDirectory;
     private final MirrorStore mirrorStore;
     private final Path velocityProperties;
+
+    private final Pattern migratedDatasetDoiPattern;
     private boolean initialized = false;
     private boolean tasksCreatedInitialization = false;
 
@@ -77,7 +80,7 @@ public class MirroringService implements Managed {
 
     public MirroringService(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader, Path velocityProperties, int pollingInterval, List<Inbox> inboxes,
         Path workDirectory,
-        Path depositOutbox, Path failedBox, Path mirrorStore) {
+        Path depositOutbox, Path failedBox, Pattern migratedDatasetDoiPattern, Path mirrorStore) {
         this.executorService = executorService;
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.velocityProperties = velocityProperties;
@@ -86,6 +89,7 @@ public class MirroringService implements Managed {
         this.workDirectory = workDirectory;
         this.depositOutbox = depositOutbox;
         this.failedBox = failedBox;
+        this.migratedDatasetDoiPattern = migratedDatasetDoiPattern;
         this.mirrorStore = new MirrorStore(mirrorStore);
     }
 
@@ -144,7 +148,7 @@ public class MirroringService implements Managed {
             else {
                 log.warn("Associated XML file was not found");
             }
-            executorService.execute(new MirrorTask(transferItemMetadataReader, workingDve, inbox.getIgnoreMigratedDatasetUpdatesPublishedBefore(), workDirectory, depositOutbox, failedBox, mirrorStore));
+            executorService.execute(new MirrorTask(transferItemMetadataReader, workingDve, inbox.getIgnoreMigratedDatasetUpdatesPublishedBefore(), workDirectory, depositOutbox, failedBox, migratedDatasetDoiPattern, mirrorStore));
         }
         catch (IOException e) {
             log.error("Could not move DVE to work directory", e);

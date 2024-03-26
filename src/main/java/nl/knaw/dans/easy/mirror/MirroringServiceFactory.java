@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.regex.Pattern;
 
 public class MirroringServiceFactory {
 
@@ -56,9 +57,14 @@ public class MirroringServiceFactory {
     @Valid
     private Path velocityProperties;
 
+
+    @NotNull
+    @Valid
+    private Pattern migratedDatasetDoiPattern;
+
     public MirroringService build(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader) {
         return new MirroringService(executorService, transferItemMetadataReader, velocityProperties, pollingInterval, inboxes, workDir,
-            depositOutbox, failedBox, easyMirrorStore);
+            depositOutbox, failedBox, migratedDatasetDoiPattern, easyMirrorStore);
     }
 
     public List<Inbox> getInboxes() {
@@ -116,5 +122,14 @@ public class MirroringServiceFactory {
     public void setVelocityProperties(Path velocityProperties) {
         this.velocityProperties = velocityProperties;
     }
+
+    public Pattern getMigratedDatasetDoiPattern() {
+        return migratedDatasetDoiPattern;
+    }
+
+    public void setMigratedDatasetDoiPattern(String migratedDatasetDoiPattern) {
+        this.migratedDatasetDoiPattern = Pattern.compile(migratedDatasetDoiPattern);
+    }
+
 
 }

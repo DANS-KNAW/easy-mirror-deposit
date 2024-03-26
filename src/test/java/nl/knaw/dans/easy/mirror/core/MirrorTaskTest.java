@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,6 +43,9 @@ public class MirrorTaskTest {
     private final Path mirrorStoreDir = Paths.get("target/test/MirrorTaskTest/mirrorStore");
     private final MirrorStore mirrorStore = new MirrorStore(mirrorStoreDir);
     private final Path dveRootDir = Paths.get("src/test/resources/dves/");
+
+    private final Pattern migratedDatasetDoiPattern = Pattern.compile("^10\\.17026/DANS.*$");
+
     // TODO: can we ensure that this ObjectMapper has the same behavior as the one from the DropWizard environment?
     private final TransferItemMetadataReader transferItemMetadataReader = new TransferItemMetadataReaderImpl(new ObjectMapper(), new FileServiceImpl());
 
@@ -64,7 +68,7 @@ public class MirrorTaskTest {
         Path dveInInbox = inbox.resolve(dve.getFileName());
         Files.copy(dveRootDir.resolve(dve), dveInInbox);
         Date oldDate = dateFormat.parse("2000-01-01");
-        return new MirrorTask(transferItemMetadataReader, dveInInbox, oldDate, workDir, depositOutbox, failedBox, mirrorStore);
+        return new MirrorTask(transferItemMetadataReader, dveInInbox, oldDate, workDir, depositOutbox, failedBox, migratedDatasetDoiPattern, mirrorStore);
     }
 
     @Test

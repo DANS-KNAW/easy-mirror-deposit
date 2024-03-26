@@ -44,6 +44,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static org.joda.time.DateTimeZone.UTC;
 
@@ -59,12 +60,14 @@ public class MirrorTask implements Runnable {
     private final Path failedBox;
     private final MirrorStore mirrorStore;
 
+    private final Pattern migratedDatasetDoiPattern;
+
     private FilenameAttributes filenameAttributes;
     private FileContentAttributes fileContentAttributes;
     private FilesystemAttributes filesystemAttributes;
 
     public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Date ignoreMigratedDatasetUpdatesPublishedBefore, Path workDirectory,
-        Path depositOutbox, Path failedBox,
+        Path depositOutbox, Path failedBox, Pattern migratedDatasetDoiPattern,
         MirrorStore mirrorStore) {
         this.transferItemMetadataReader = transferItemMetadataReader;
         this.datasetVersionExportZip = datasetVersionExportZip;
@@ -73,6 +76,7 @@ public class MirrorTask implements Runnable {
         this.depositOutbox = depositOutbox;
         this.failedBox = failedBox;
         this.mirrorStore = mirrorStore;
+        this.migratedDatasetDoiPattern = migratedDatasetDoiPattern;
     }
 
     @Override
@@ -166,7 +170,7 @@ public class MirrorTask implements Runnable {
 
     private boolean isMigratedDataset(String doi) {
         log.trace("isMigratedDataset({})", doi);
-        return doi.startsWith("10.17026/DANS");
+        return migratedDatasetDoiPattern.matcher(doi).matches();
     }
 
     private PropertiesConfiguration createDepositProperties(String uuid) {
