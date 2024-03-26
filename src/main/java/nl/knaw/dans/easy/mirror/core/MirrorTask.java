@@ -98,7 +98,7 @@ public class MirrorTask implements Runnable {
                 else {
                     DatasetMetadata md = createDatasetMetadata();
 
-                    if (getTimestampFromString(md.getModified()).before(ignoreMigratedDatasetUpdatesPublishedBefore)) {
+                    if (getTimestampFromString(md.getPublished()).before(ignoreMigratedDatasetUpdatesPublishedBefore)) {
                         log.warn("Migrated dataset > v1.0 but published on {}, so before the cut-off date of {} and probably a migration back-log item. Not processing (deleting DVE)",
                             md.getModified(),
                             ignoreMigratedDatasetUpdatesPublishedBefore);
