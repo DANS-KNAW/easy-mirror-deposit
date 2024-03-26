@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 import static org.joda.time.DateTimeZone.UTC;
 
 public class MirrorTask implements Runnable {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final Logger log = LoggerFactory.getLogger(MirrorTask.class);
 
     private final TransferItemMetadataReader transferItemMetadataReader;
