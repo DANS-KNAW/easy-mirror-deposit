@@ -112,13 +112,6 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public String calculateChecksum(Path path) throws IOException {
-        Objects.requireNonNull(path, "path cannot be null");
-        log.trace("Calculating checksum for '{}'", path);
-        return new DigestUtils("SHA-256").digestAsHex(Files.readAllBytes(path));
-    }
-
-    @Override
     public long getFileSize(Path path) throws IOException {
         Objects.requireNonNull(path, "path cannot be null");
         log.trace("Getting file size for path '{}'", path);

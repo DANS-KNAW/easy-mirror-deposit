@@ -31,8 +31,6 @@ public interface FileService {
 
     Object getFilesystemAttribute(Path path, String property) throws IOException;
 
-    String calculateChecksum(Path path) throws IOException;
-
     long getFileSize(Path path) throws IOException;
 
     long getPathSize(Path path) throws IOException;

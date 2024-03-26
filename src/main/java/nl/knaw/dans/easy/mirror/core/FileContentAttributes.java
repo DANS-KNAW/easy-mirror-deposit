@@ -26,10 +26,7 @@ public class FileContentAttributes {
     private String otherIdVersion;
     private String swordToken;
     private String swordClient;
-    private String bagChecksum;
-
-    public FileContentAttributes(String datasetVersion, String bagId, String nbn, byte[] oaiOre, byte[] pidMapping, String otherId, String otherIdVersion, String swordToken, String swordClient,
-        String bagChecksum) {
+    public FileContentAttributes(String datasetVersion, String bagId, String nbn, byte[] oaiOre, byte[] pidMapping, String otherId, String otherIdVersion, String swordToken, String swordClient) {
         this.datasetVersion = datasetVersion;
         this.bagId = bagId;
         this.nbn = nbn;
@@ -39,7 +36,6 @@ public class FileContentAttributes {
         this.otherIdVersion = otherIdVersion;
         this.swordToken = swordToken;
         this.swordClient = swordClient;
-        this.bagChecksum = bagChecksum;
     }
 
     public FileContentAttributes() {
@@ -127,15 +123,6 @@ public class FileContentAttributes {
             ", otherIdVersion='" + otherIdVersion + '\'' +
             ", swordToken='" + swordToken + '\'' +
             ", swordClient='" + swordClient + '\'' +
-            ", bagChecksum='" + bagChecksum + '\'' +
             '}';
-    }
-
-    public String getBagChecksum() {
-        return bagChecksum;
-    }
-
-    public void setBagChecksum(String bagChecksum) {
-        this.bagChecksum = bagChecksum;
     }
 }

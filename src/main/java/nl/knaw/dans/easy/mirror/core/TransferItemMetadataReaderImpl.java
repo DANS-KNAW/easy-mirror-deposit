@@ -103,7 +103,6 @@ public class TransferItemMetadataReaderImpl implements TransferItemMetadataReade
             String swordClient = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:dansSwordClient");
             String swordToken = getOptionalStringFromNode(describesNode, "dansDataVaultMetadata:dansSwordToken");
 
-            result.setBagChecksum(fileService.calculateChecksum(path));
             result.setPidMapping(pidMapping);
             result.setOaiOre(oaiOre);
             result.setNbn(nbn);
