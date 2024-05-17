@@ -59,3 +59,6 @@ logging:
       timeZone: system
       archive: false
       currentLogFilename: /var/opt/dans.knaw.nl/log/easy-mirror-deposit/easy-mirror-deposit.log
+  loggers:
+    'org.hibernate.engine.internal.StatisticalLoggingSessionEventListener': 'OFF'
+

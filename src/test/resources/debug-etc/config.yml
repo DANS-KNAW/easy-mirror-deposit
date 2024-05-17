@@ -31,5 +31,5 @@ mirroringService:
 logging:
   level: INFO
   loggers:
-    "nl.knaw.dans":
-      level: DEBUG
+    'nl.knaw.dans': DEBUG
+    'org.hibernate.engine.internal.StatisticalLoggingSessionEventListener': 'OFF'
