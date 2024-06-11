@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>easy-mirror-deposit</artifactId>
-    <version>3.1.4-SNAPSHOT</version>
+    <version>3.2.0</version>
 
     <name>EASY Mirror Deposit</name>
     <url>https://github.com/DANS-KNAW/easy-mirror-deposit</url>
@@ -42,7 +42,7 @@
 
     <scm>
         <developerConnection>scm:git:ssh://github.com/DANS-KNAW/${project.artifactId}</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v3.2.0</tag>
     </scm>
 
     <dependencies>
