@@ -64,7 +64,7 @@ public class MirroringServiceFactory {
 
     public MirroringService build(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader) {
         return new MirroringService(executorService, transferItemMetadataReader, velocityProperties, pollingInterval, inboxes, workDir,
-            depositOutbox, failedBox, migratedDatasetDoiPattern, easyMirrorStore);
+            failedBox, easyMirrorStore);
     }
 
     public List<Inbox> getInboxes() {

@@ -15,7 +15,6 @@
  */
 package nl.knaw.dans.easy.mirror.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.app.Velocity;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,9 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -45,7 +42,7 @@ public class MirrorTaskTest {
     private final Pattern migratedDatasetDoiPattern = Pattern.compile("^10\\.17026/DANS.*$");
 
     // TODO: can we ensure that this ObjectMapper has the same behavior as the one from the DropWizard environment?
-    private final TransferItemMetadataReader transferItemMetadataReader = new TransferItemMetadataReaderImpl(new ObjectMapper(), new FileServiceImpl());
+    private final TransferItemMetadataReader transferItemMetadataReader = new TransferItemMetadataReaderImpl();
 
     @BeforeEach
     public void setUp() throws Exception {

@@ -20,11 +20,5 @@ import java.util.Optional;
 
 public interface TransferItemMetadataReader {
 
-    FilenameAttributes getFilenameAttributes(Path path) throws InvalidTransferItemException;
-
-    FilesystemAttributes getFilesystemAttributes(Path path) throws InvalidTransferItemException;
-
-    FileContentAttributes getFileContentAttributes(Path path) throws InvalidTransferItemException;
-
     Optional<Path> getAssociatedXmlFile(Path path);
 }

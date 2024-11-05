@@ -44,6 +44,9 @@ public class MirrorTask implements Runnable {
         log.info("Processing {}", datasetVersionExportZip.getFileName());
 
         try {
+            // check for valid DVE
+            new ExportedDatasetVersionName(datasetVersionExportZip.getFileName().toString());
+
             if (mirrorStore.contains(datasetVersionExportZip)) {
                 log.warn("DVE already stored: {}. Deleting DVE", datasetVersionExportZip.getFileName());
                 Files.delete(datasetVersionExportZip);
