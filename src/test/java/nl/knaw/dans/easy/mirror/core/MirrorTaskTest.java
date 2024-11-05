@@ -39,8 +39,6 @@ public class MirrorTaskTest {
     private final MirrorStore mirrorStore = new MirrorStore(mirrorStoreDir);
     private final Path dveRootDir = Paths.get("src/test/resources/dves/");
 
-    private final Pattern migratedDatasetDoiPattern = Pattern.compile("^10\\.17026/DANS.*$");
-
     // TODO: can we ensure that this ObjectMapper has the same behavior as the one from the DropWizard environment?
     private final TransferItemMetadataReader transferItemMetadataReader = new TransferItemMetadataReaderImpl();
 

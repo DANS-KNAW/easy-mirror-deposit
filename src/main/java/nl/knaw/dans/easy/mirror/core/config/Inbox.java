@@ -29,28 +29,11 @@ public class Inbox {
     @Valid
     private Path path;
 
-    @NotNull
-    @Valid
-    private Date ignoreMigratedDatasetUpdatesPublishedBefore;
-
     public Path getPath() {
         return path;
     }
 
     public void setPath(Path path) {
         this.path = path;
-    }
-
-    public Date getIgnoreMigratedDatasetUpdatesPublishedBefore() {
-        return ignoreMigratedDatasetUpdatesPublishedBefore;
-    }
-
-    public void setIgnoreMigratedDatasetUpdatesPublishedBefore(String ignoreMigratedDatasetUpdatesPublishedBefore) {
-        try {
-            this.ignoreMigratedDatasetUpdatesPublishedBefore = dateFormat.parse(ignoreMigratedDatasetUpdatesPublishedBefore);
-        }
-        catch (ParseException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 }
