@@ -37,8 +37,6 @@ public class MirrorTaskTest {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private final Path inbox = Paths.get("target/test/MirrorTaskTest/inbox");
-    private final Path depositOutbox = Paths.get("target/test/MirrorTaskTest/depositOutbox");
-    private final Path workDir = Paths.get("target/test/MirrorTaskTest/workingDirectory");
     private final Path failedBox = Paths.get("target/test/MirrorTaskTest/failedBox");
     private final Path mirrorStoreDir = Paths.get("target/test/MirrorTaskTest/mirrorStore");
     private final MirrorStore mirrorStore = new MirrorStore(mirrorStoreDir);
@@ -53,13 +51,9 @@ public class MirrorTaskTest {
     public void setUp() throws Exception {
         Velocity.init("src/test/resources/velocity.properties");
         FileUtils.deleteDirectory(inbox.toFile());
-        FileUtils.deleteDirectory(workDir.toFile());
-        FileUtils.deleteDirectory(depositOutbox.toFile());
         FileUtils.deleteDirectory(failedBox.toFile());
         FileUtils.deleteDirectory(mirrorStoreDir.toFile());
-        Files.createDirectories(workDir);
         Files.createDirectories(inbox);
-        Files.createDirectories(depositOutbox);
         Files.createDirectories(failedBox);
         Files.createDirectories(mirrorStoreDir);
     }
@@ -67,8 +61,7 @@ public class MirrorTaskTest {
     private MirrorTask createTask(Path dve) throws Exception {
         Path dveInInbox = inbox.resolve(dve.getFileName());
         Files.copy(dveRootDir.resolve(dve), dveInInbox);
-        Date oldDate = dateFormat.parse("2000-01-01");
-        return new MirrorTask(transferItemMetadataReader, dveInInbox, oldDate, workDir, depositOutbox, failedBox, migratedDatasetDoiPattern, mirrorStore);
+        return new MirrorTask(transferItemMetadataReader, dveInInbox, failedBox, mirrorStore);
     }
 
     @Test
@@ -77,14 +70,12 @@ public class MirrorTaskTest {
         createTask(dve).run();
         assertTrue(Files.exists(failedBox.resolve(dve.getFileName())));
         assertFalse(mirrorStore.contains(dve));
-        assertEquals(0, Files.list(depositOutbox).count());
     }
 
     @Test
     public void dve_V1_1_goes_only_to_mirror_store() throws Exception {
         Path dve = Paths.get("valid/doi-10-5072-fk2-xcfq1bv1.1.zip");
         createTask(dve).run();
-        assertEquals(0, Files.list(depositOutbox).count());
         assertTrue(mirrorStore.contains(dve));
     }
 
@@ -92,11 +83,6 @@ public class MirrorTaskTest {
     public void dve_V1_goes_to_mirror_store_and_produces_deposit() throws Exception {
         Path dve = Paths.get("valid/doi-10-5072-fk2-xcfq1bv1.0.zip");
         createTask(dve).run();
-        assertEquals(1, Files.list(depositOutbox).count());
-        Path depositDir = Files.list(depositOutbox).collect(Collectors.toList()).get(0);
-        assertTrue(Files.exists(depositDir.resolve("deposit.properties")));
-
         assertTrue(mirrorStore.contains(dve));
     }
-
 }
