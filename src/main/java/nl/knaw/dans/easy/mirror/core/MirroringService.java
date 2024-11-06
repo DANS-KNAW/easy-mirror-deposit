@@ -31,7 +31,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class MirroringService implements Managed {
