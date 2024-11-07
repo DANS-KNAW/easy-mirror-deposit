@@ -16,18 +16,13 @@
 package nl.knaw.dans.easy.mirror;
 
 import nl.knaw.dans.easy.mirror.core.MirroringService;
-import nl.knaw.dans.easy.mirror.core.TransferItemMetadataReader;
 import nl.knaw.dans.easy.mirror.core.config.Inbox;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.regex.Pattern;
 
 public class MirroringServiceFactory {
 
@@ -53,8 +48,8 @@ public class MirroringServiceFactory {
     @Valid
     private Path velocityProperties;
 
-    public MirroringService build(ExecutorService executorService, TransferItemMetadataReader transferItemMetadataReader) {
-        return new MirroringService(executorService, transferItemMetadataReader, velocityProperties, pollingInterval, inboxes, workDir,
+    public MirroringService build(ExecutorService executorService) {
+        return new MirroringService(executorService, velocityProperties, pollingInterval, inboxes, workDir,
             failedBox, easyMirrorStore);
     }
 

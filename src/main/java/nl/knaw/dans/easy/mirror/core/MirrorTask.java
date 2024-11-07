@@ -27,13 +27,11 @@ public class MirrorTask implements Runnable {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final Logger log = LoggerFactory.getLogger(MirrorTask.class);
 
-    private final TransferItemMetadataReader transferItemMetadataReader;
     private final Path datasetVersionExportZip;
     private final Path failedBox;
     private final MirrorStore mirrorStore;
 
-    public MirrorTask(TransferItemMetadataReader transferItemMetadataReader, Path datasetVersionExportZip, Path failedBox, MirrorStore mirrorStore) {
-        this.transferItemMetadataReader = transferItemMetadataReader;
+    public MirrorTask(Path datasetVersionExportZip, Path failedBox, MirrorStore mirrorStore) {
         this.datasetVersionExportZip = datasetVersionExportZip;
         this.failedBox = failedBox;
         this.mirrorStore = mirrorStore;

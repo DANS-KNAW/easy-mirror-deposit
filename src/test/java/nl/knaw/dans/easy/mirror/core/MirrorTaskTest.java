@@ -39,9 +39,6 @@ public class MirrorTaskTest {
     private final MirrorStore mirrorStore = new MirrorStore(mirrorStoreDir);
     private final Path dveRootDir = Paths.get("src/test/resources/dves/");
 
-    // TODO: can we ensure that this ObjectMapper has the same behavior as the one from the DropWizard environment?
-    private final TransferItemMetadataReader transferItemMetadataReader = new TransferItemMetadataReaderImpl();
-
     @BeforeEach
     public void setUp() throws Exception {
         Velocity.init("src/test/resources/velocity.properties");
@@ -56,7 +53,7 @@ public class MirrorTaskTest {
     private MirrorTask createTask(Path dve) throws Exception {
         Path dveInInbox = inbox.resolve(dve.getFileName());
         Files.copy(dveRootDir.resolve(dve), dveInInbox);
-        return new MirrorTask(transferItemMetadataReader, dveInInbox, failedBox, mirrorStore);
+        return new MirrorTask(dveInInbox, failedBox, mirrorStore);
     }
 
     @Test
