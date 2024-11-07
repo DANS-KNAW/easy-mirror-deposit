@@ -21,10 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
 
 public class MirrorTask implements Runnable {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final Logger log = LoggerFactory.getLogger(MirrorTask.class);
 
     private final Path datasetVersionExportZip;

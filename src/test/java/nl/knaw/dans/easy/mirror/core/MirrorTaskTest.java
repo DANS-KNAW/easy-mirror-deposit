@@ -22,16 +22,11 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MirrorTaskTest {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
     private final Path inbox = Paths.get("target/test/MirrorTaskTest/inbox");
     private final Path failedBox = Paths.get("target/test/MirrorTaskTest/failedBox");
     private final Path mirrorStoreDir = Paths.get("target/test/MirrorTaskTest/mirrorStore");

@@ -18,12 +18,8 @@ package nl.knaw.dans.easy.mirror.core.config;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Inbox {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @NotNull
     @Valid

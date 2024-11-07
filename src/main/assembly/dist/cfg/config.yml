@@ -26,6 +26,7 @@ mirroringService:
     - path: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/phys-techsciences'
 
   pollingInterval: 1000
+  workDir: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-working-directory'
   failedBox: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-failed'
   easyMirrorStore: '/data/easy-mirror-store'
 
