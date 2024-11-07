@@ -16,7 +16,6 @@
 package nl.knaw.dans.easy.mirror.core;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.velocity.app.Velocity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +40,6 @@ public class MirrorTaskTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        Velocity.init("src/test/resources/velocity.properties");
         FileUtils.deleteDirectory(inbox.toFile());
         FileUtils.deleteDirectory(failedBox.toFile());
         FileUtils.deleteDirectory(mirrorStoreDir.toFile());

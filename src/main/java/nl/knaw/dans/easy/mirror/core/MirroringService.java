@@ -20,7 +20,6 @@ import nl.knaw.dans.easy.mirror.core.config.Inbox;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
-import org.apache.velocity.app.Velocity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,13 +41,12 @@ public class MirroringService implements Managed {
     private final Path failedBox;
     private final Path workDirectory;
     private final MirrorStore mirrorStore;
-    private final Path velocityProperties;
 
     private boolean initialized = false;
     private boolean tasksCreatedInitialization = false;
 
     private class EventHandler extends FileAlterationListenerAdaptor {
-        private Inbox inbox;
+        private final Inbox inbox;
 
         public EventHandler(Inbox inbox) {
             this.inbox = inbox;
@@ -74,11 +72,10 @@ public class MirroringService implements Managed {
         }
     }
 
-    public MirroringService(ExecutorService executorService, Path velocityProperties, int pollingInterval, List<Inbox> inboxes,
+    public MirroringService(ExecutorService executorService, int pollingInterval, List<Inbox> inboxes,
         Path workDirectory,
         Path failedBox, Path mirrorStore) {
         this.executorService = executorService;
-        this.velocityProperties = velocityProperties;
         this.pollingInterval = pollingInterval;
         this.inboxes = inboxes;
         this.workDirectory = workDirectory;
@@ -87,10 +84,8 @@ public class MirroringService implements Managed {
     }
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         log.info("Starting Mirroring Service");
-        Velocity.init(velocityProperties.toString());
-        log.debug("Initialized Velocity");
 
         log.debug("Creating monitor");
         FileAlterationMonitor monitor = new FileAlterationMonitor(pollingInterval);

@@ -28,7 +28,6 @@ mirroringService:
   pollingInterval: 1000
   failedBox: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-failed'
   easyMirrorStore: '/data/easy-mirror-store'
-  velocityProperties: '/etc/opt/dans.knaw.nl/easy-mirror-deposit/velocity.properties'
 
 #
 # See https://www.dropwizard.io/en/latest/manual/configuration.html#logging

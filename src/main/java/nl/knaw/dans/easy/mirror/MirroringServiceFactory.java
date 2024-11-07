@@ -44,12 +44,8 @@ public class MirroringServiceFactory {
     @Valid
     private Path easyMirrorStore;
 
-    @NotNull
-    @Valid
-    private Path velocityProperties;
-
     public MirroringService build(ExecutorService executorService) {
-        return new MirroringService(executorService, velocityProperties, pollingInterval, inboxes, workDir,
+        return new MirroringService(executorService, pollingInterval, inboxes, workDir,
             failedBox, easyMirrorStore);
     }
 
@@ -91,13 +87,5 @@ public class MirroringServiceFactory {
 
     public void setEasyMirrorStore(Path easyMirrorStore) {
         this.easyMirrorStore = easyMirrorStore;
-    }
-
-    public Path getVelocityProperties() {
-        return velocityProperties;
-    }
-
-    public void setVelocityProperties(Path velocityProperties) {
-        this.velocityProperties = velocityProperties;
     }
 }

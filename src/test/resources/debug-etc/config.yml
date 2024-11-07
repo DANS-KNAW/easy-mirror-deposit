@@ -23,7 +23,6 @@ mirroringService:
   pollingInterval: 500
   failedBox: 'data/easy-mirror-deposit-failed'
   easyMirrorStore: 'data/easy-mirror-store'
-  velocityProperties: 'etc/velocity.properties'
 
 logging:
   level: INFO
