@@ -37,10 +37,8 @@ public class ExportedDatasetVersionName {
     private static final Pattern PATTERN = Pattern.compile(SPACENAME_PATTERN + SCHEMA_PATTERN + DATASET_VERSION_PATTERN + EXTENSION_PATTERN);
 
     private final String spaceName;
-    private final String schema;
     private final int majorVersion;
     private final int minorVersion;
-    private final String extension;
 
     /**
      * Creates a new object to parse the name of one of the exported files. It works on both the exported ZIP and XML files. Only pass in the base name, not the complete path.
@@ -52,10 +50,8 @@ public class ExportedDatasetVersionName {
         if (!matcher.matches())
             throw new IllegalArgumentException(String.format("Name does not conform to dataset version export naming pattern: %s", name));
         spaceName = matcher.group("spacename");
-        schema = matcher.group("schema");
         majorVersion = Integer.parseInt(matcher.group("major"));
         minorVersion = Integer.parseInt(matcher.group("minor"));
-        extension = matcher.group("extension");
     }
 
     /**
@@ -67,19 +63,11 @@ public class ExportedDatasetVersionName {
         return spaceName;
     }
 
-    public String getSchema() {
-        return schema;
-    }
-
     public int getMajorVersion() {
         return majorVersion;
     }
 
     public int getMinorVersion() {
         return minorVersion;
-    }
-
-    public String getExtension() {
-        return extension;
     }
 }

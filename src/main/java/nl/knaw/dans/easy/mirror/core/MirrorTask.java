@@ -42,7 +42,7 @@ public class MirrorTask implements Runnable {
         log.info("Processing {}", datasetVersionExportZip.getFileName());
 
         try {
-            // check for valid DVE
+            // check for valid DVE, class also used in MirroringService.getAssociatedXmlFile
             new ExportedDatasetVersionName(datasetVersionExportZip.getFileName().toString());
 
             if (mirrorStore.contains(datasetVersionExportZip)) {
