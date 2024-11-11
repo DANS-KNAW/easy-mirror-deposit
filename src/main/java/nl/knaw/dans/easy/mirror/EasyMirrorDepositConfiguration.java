@@ -17,7 +17,6 @@
 package nl.knaw.dans.easy.mirror;
 
 import io.dropwizard.Configuration;
-import nl.knaw.dans.lib.util.ExecutorServiceFactory;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -26,19 +25,7 @@ public class EasyMirrorDepositConfiguration extends Configuration {
 
     @NotNull
     @Valid
-    private ExecutorServiceFactory taskQueue;
-
-    @NotNull
-    @Valid
     private MirroringServiceFactory mirroringService;
-
-    public ExecutorServiceFactory getTaskQueue() {
-        return taskQueue;
-    }
-
-    public void setTaskQueue(ExecutorServiceFactory taskQueue) {
-        this.taskQueue = taskQueue;
-    }
 
     public MirroringServiceFactory getMirroringService() {
         return mirroringService;

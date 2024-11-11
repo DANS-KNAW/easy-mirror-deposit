@@ -31,7 +31,7 @@ public class InboxHealth extends HealthCheck {
     }
 
     @Override
-    protected Result check() throws Exception {
+    protected Result check() {
         try (Stream<Path> inboxFiles = Files.list(inboxDir)) {
             String inboxFileNames = inboxFiles.map(Path::getFileName).map(Path::toString).collect(Collectors.joining(", "));
             if (inboxFileNames.isEmpty()) {

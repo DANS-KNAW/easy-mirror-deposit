@@ -8,46 +8,16 @@ server:
     - type: http
       port: 20311
 
-taskQueue:
-  nameFormat: "mirroring-worker-%d"
-  maxQueueSize: 5000
-  # Number of threads will be increased when maxQueueSize is exceeded.
-  minThreads: 1
-  # No more than maxThreads will be created though
-  maxThreads: 10
-  # Threads will die after 60 seconds of idleness
-  keepAliveTime: 60 seconds
-
 mirroringService:
   inboxes:
     - path: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/archaeology'
-      #
-      # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
-      #
-      ignoreMigratedDatasetUpdatesPublishedBefore: '2022-06-22'
     - path: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/ssh'
-      #
-      # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
-      #
-      ignoreMigratedDatasetUpdatesPublishedBefore: '2023-06-01'
     - path: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/lifesciences'
-      #
-      # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
-      #
-      ignoreMigratedDatasetUpdatesPublishedBefore: '2023-12-05'
     - path: '/var/opt/dans.knaw.nl/tmp/transfer-inboxes/phys-techsciences'
-      #
-      # DVEs with version > 1.0 AND schema:datePublished before the date configured below should be deleted with a warning
-      #
-      ignoreMigratedDatasetUpdatesPublishedBefore: '2023-12-07'
 
   pollingInterval: 1000
-  migratedDatasetDoiPattern: '^10\.17026/DANS.*$'
-  workDir: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-working-directory'
-  depositOutbox: '/var/opt/dans.knaw.nl/tmp/easy-ingest-flow-inbox'
   failedBox: '/var/opt/dans.knaw.nl/tmp/easy-mirror-deposit-failed'
   easyMirrorStore: '/data/easy-mirror-store'
-  velocityProperties: '/etc/opt/dans.knaw.nl/easy-mirror-deposit/velocity.properties'
 
 #
 # See https://www.dropwizard.io/en/latest/manual/configuration.html#logging

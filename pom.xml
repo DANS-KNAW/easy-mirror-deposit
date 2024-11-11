@@ -51,10 +51,6 @@
             <artifactId>dropwizard-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>nl.knaw.dans</groupId>
-            <artifactId>dans-java-utils</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
         </dependency>
@@ -77,10 +73,6 @@
         <dependency>
             <groupId>nl.knaw.dans</groupId>
             <artifactId>bagit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity-engine-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
