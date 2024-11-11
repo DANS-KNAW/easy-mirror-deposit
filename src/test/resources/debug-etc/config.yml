@@ -8,16 +8,6 @@ server:
     - type: http
       port: 20311
 
-taskQueue:
-  nameFormat: "mirroring-worker-%d"
-  maxQueueSize: 5000
-  # Number of threads will be increased when maxQueueSize is exceeded.
-  minThreads: 1
-  # No more than maxThreads will be created though
-  maxThreads: 10
-  # Threads will die after 60 seconds of idleness
-  keepAliveTime: 60 seconds
-
 mirroringService:
   inbox: 'data/transfer-inbox'
   pollingInterval: 500

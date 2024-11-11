@@ -22,8 +22,6 @@ import nl.knaw.dans.easy.mirror.core.MirroringService;
 import nl.knaw.dans.easy.mirror.core.config.Inbox;
 import nl.knaw.dans.easy.mirror.health.InboxHealth;
 
-import java.util.concurrent.ExecutorService;
-
 public class EasyMirrorDepositApplication extends Application<EasyMirrorDepositConfiguration> {
 
     public static void main(final String[] args) throws Exception {
@@ -37,7 +35,6 @@ public class EasyMirrorDepositApplication extends Application<EasyMirrorDepositC
 
     @Override
     public void run(final EasyMirrorDepositConfiguration configuration, final Environment environment) {
-        final ExecutorService taskExecutor = configuration.getTaskQueue().build(environment);
         final MirroringService mirroringService = configuration.getMirroringService().build();
         environment.lifecycle().manage(mirroringService);
         for (Inbox inbox : configuration.getMirroringService().getInboxes()) {
