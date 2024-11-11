@@ -22,7 +22,6 @@ echo "OK"
 
 echo -n "Creating directories for test data and processing..."
 mkdir $TEMPDIR/transfer-inbox
-mkdir $TEMPDIR/easy-mirror-deposit-working-directory
 mkdir $TEMPDIR/easy-ingest-flow-inbox
 mkdir $TEMPDIR/easy-mirror-deposit-failed
 mkdir $TEMPDIR/easy-mirror-store

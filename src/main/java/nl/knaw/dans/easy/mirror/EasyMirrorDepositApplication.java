@@ -38,8 +38,7 @@ public class EasyMirrorDepositApplication extends Application<EasyMirrorDepositC
     @Override
     public void run(final EasyMirrorDepositConfiguration configuration, final Environment environment) {
         final ExecutorService taskExecutor = configuration.getTaskQueue().build(environment);
-        final MirroringService mirroringService = configuration.getMirroringService()
-            .build(taskExecutor);
+        final MirroringService mirroringService = configuration.getMirroringService().build();
         environment.lifecycle().manage(mirroringService);
         for (Inbox inbox : configuration.getMirroringService().getInboxes()) {
             environment.healthChecks().register(String.format("Inbox-%s", inbox.getPath().toString()), new InboxHealth(inbox.getPath()));

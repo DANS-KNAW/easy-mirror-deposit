@@ -22,21 +22,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class MirrorTask implements Runnable {
+public class MirrorTask  {
     private static final Logger log = LoggerFactory.getLogger(MirrorTask.class);
 
-    private final Path datasetVersionExportZip;
     private final Path failedBox;
     private final MirrorStore mirrorStore;
 
-    public MirrorTask(Path datasetVersionExportZip, Path failedBox, MirrorStore mirrorStore) {
-        this.datasetVersionExportZip = datasetVersionExportZip;
+    public MirrorTask(Path failedBox, MirrorStore mirrorStore) {
         this.failedBox = failedBox;
         this.mirrorStore = mirrorStore;
     }
 
-    @Override
-    public void run() {
+    public void move(Path datasetVersionExportZip) {
         log.info("Processing {}", datasetVersionExportZip.getFileName());
 
         try {

@@ -34,18 +34,14 @@ public class MirroringServiceFactory {
 
     @NotNull
     @Valid
-    private Path workDir;
-
-    @NotNull
-    @Valid
     private Path failedBox;
 
     @NotNull
     @Valid
     private Path easyMirrorStore;
 
-    public MirroringService build(ExecutorService executorService) {
-        return new MirroringService(executorService, pollingInterval, inboxes, workDir,
+    public MirroringService build() {
+        return new MirroringService(pollingInterval, inboxes,
             failedBox, easyMirrorStore);
     }
 
@@ -63,14 +59,6 @@ public class MirroringServiceFactory {
 
     public void setPollingInterval(int pollingInterval) {
         this.pollingInterval = pollingInterval;
-    }
-
-    public Path getWorkDir() {
-        return workDir;
-    }
-
-    public void setWorkDir(Path workDir) {
-        this.workDir = workDir;
     }
 
     public Path getFailedBox() {

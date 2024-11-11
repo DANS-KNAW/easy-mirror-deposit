@@ -43,16 +43,16 @@ public class MirrorTaskTest {
         Files.createDirectories(mirrorStoreDir);
     }
 
-    private MirrorTask createTask(Path dve) throws Exception {
+    private void executeTask(Path dve) throws Exception {
         Path dveInInbox = inbox.resolve(dve.getFileName());
         Files.copy(dveRootDir.resolve(dve), dveInInbox);
-        return new MirrorTask(dveInInbox, failedBox, mirrorStore);
+        new MirrorTask(failedBox, mirrorStore).move(dveInInbox);
     }
 
     @Test
     public void dve_with_invalid_name_goes_to_failedBox() throws Exception {
         Path dve = Paths.get("invalid-names/not-a-dve.zip");
-        createTask(dve).run();
+        executeTask(dve);
         assertTrue(Files.exists(failedBox.resolve(dve.getFileName())));
         assertFalse(mirrorStore.contains(dve));
     }
@@ -60,14 +60,14 @@ public class MirrorTaskTest {
     @Test
     public void dve_V1_1_goes_only_to_mirror_store() throws Exception {
         Path dve = Paths.get("valid/doi-10-5072-fk2-xcfq1bv1.1.zip");
-        createTask(dve).run();
+        executeTask(dve);
         assertTrue(mirrorStore.contains(dve));
     }
 
     @Test
     public void dve_V1_goes_to_mirror_store_and_produces_deposit() throws Exception {
         Path dve = Paths.get("valid/doi-10-5072-fk2-xcfq1bv1.0.zip");
-        createTask(dve).run();
+        executeTask(dve);
         assertTrue(mirrorStore.contains(dve));
     }
 }
